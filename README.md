@@ -1,6 +1,8 @@
 # Projeto de Prática Proffisional em ADS 💻
 
-## Grupo: PROJETO DA DISCIPLINA 7
+## Nome do Porjeto: Tiger Bank
+
+### Grupo: PROJETO DA DISCIPLINA 7
 * **Integrantes:**
     * ALDEZON HENRIQUE SALVADOR SANTOS (RA: 10416147)
     * CAIO FERNANDES (RA: 10423640)
