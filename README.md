@@ -1,2 +1,9 @@
-# ppads-project
-Repositório para desenvolvimento do projeto acadêmico da matéria Práticas Profissionais em Análise e Desenvolvimento de Sistemas da Universidade Presbiteriana Macnkenzie.
+# Projeto de Prática Proffisional em ADS
+
+## Grupo: PROJETO DA DISCIPLINA 7
+* **Integrantes:**
+    * ALDEZON HENRIQUE SALVADOR SANTOS (RA: 10416147)
+    * CAIO FERNANDES (RA: 10423640)
+    * ISLAS MATHEUS COELHO AZEVEDO (RA: 10423586)
+    * JOAO PEDRO LIMA LUSTOSA AMORIM (RA: 10289920)
+    * WILLIAM MADEIRO DA SILVA (RA: 10423772)
