@@ -1,4 +1,4 @@
-# Projeto de Prática Proffisional em ADS
+# Projeto de Prática Proffisional em ADS 💻
 
 ## Grupo: PROJETO DA DISCIPLINA 7
 * **Integrantes:**
