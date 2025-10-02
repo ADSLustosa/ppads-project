@@ -1,4 +1,4 @@
-# Projeto de Prática Proffisional em ADS 💻
+# Projeto de Prática Profisional em ADS 💻
 
 ## Nome do Porjeto: Tiger Bank
 
