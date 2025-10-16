@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiger Bank 🐯</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .screen {
+            display: none;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo .icon {
+            font-size: 80px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .logo h1 {
+            font-size: 48px;
+            color: #e94560;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo p {
+            color: #a0a0a0;
+            font-size: 16px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+            color: #ffffff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a0a0a0;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(15, 52, 96, 0.5);
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #e94560;
+            background: rgba(15, 52, 96, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .form-group input::placeholder {
+            color: #666;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .radio-group input[type="radio"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b81 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00d2d3 0%, #00a8a9 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 210, 211, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffa502 0%, #ff7675 100%);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #5f27cd 0%, #8854d0 100%);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(95, 39, 205, 0.4);
+        }
+
+        .dashboard {
+            text-align: center;
+        }
+
+        .welcome {
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .balance-card .label {
+            color: #a0a0a0;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .balance-card .amount {
+            font-size: 48px;
+            font-weight: bold;
+            color: #00d2d3;
+            margin: 10px 0;
+        }
+
+        .balance-card .type {
+            color: #a0a0a0;
+            font-size: 14px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(233, 69, 96, 0.2) 0%, rgba(255, 107, 129, 0.1) 100%);
+            border: 2px solid rgba(233, 69, 96, 0.3);
+            border-radius: 20px;
+            padding: 25px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);
+            border-color: #e94560;
+        }
+
+        .action-btn.green {
+            background: linear-gradient(135deg, rgba(0, 210, 211, 0.2) 0%, rgba(0, 168, 169, 0.1) 100%);
+            border-color: rgba(0, 210, 211, 0.3);
+        }
+
+        .action-btn.green:hover {
+            box-shadow: 0 10px 30px rgba(0, 210, 211, 0.3);
+            border-color: #00d2d3;
+        }
+
+        .action-btn.purple {
+            background: linear-gradient(135deg, rgba(95, 39, 205, 0.2) 0%, rgba(136, 84, 208, 0.1) 100%);
+            border-color: rgba(95, 39, 205, 0.3);
+        }
+
+        .action-btn.purple:hover {
+            box-shadow: 0 10px 30px rgba(95, 39, 205, 0.3);
+            border-color: #5f27cd;
+        }
+
+        .action-btn-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .action-btn-text {
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-forgot {
+            display: block;
+            margin: 10px 0 20px;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 0.9rem;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            }
+
+            .btn-forgot:hover {
+            color: #0056b3;
+            }
+
+            .btn-forgot:focus {
+            outline: none;
+            color: #003d80;
+            text-decoration: none;
+            }
+
+
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #e94560;
+            font-size: 24px;
+        }
+
+        .extrato-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .extrato-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .extrato-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .extrato-list::-webkit-scrollbar-thumb {
+            background: #e94560;
+            border-radius: 10px;
+        }
+
+        .transaction-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #00d2d3;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .transaction-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .transaction-item.negative {
+            border-left-color: #e94560;
+        }
+
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .transaction-type {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .transaction-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .transaction-value.positive {
+            color: #00d2d3;
+        }
+
+        .transaction-value.negative {
+            color: #e94560;
+        }
+
+        .transaction-date {
+            color: #a0a0a0;
+            font-size: 12px;
+        }
+
+        .transaction-description {
+            color: #a0a0a0;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .alert-success {
+            background: rgba(0, 210, 211, 0.2);
+            border: 1px solid #00d2d3;
+            color: #00d2d3;
+        }
+
+        .alert-error {
+            background: rgba(233, 69, 96, 0.2);
+            border: 1px solid #e94560;
+            color: #e94560;
+        }
+
+        .info-text {
+            text-align: center;
+            color: #a0a0a0;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-card .stat-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .stat-label {
+            color: #a0a0a0;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00d2d3;
+        }
+
+        .loan-info {
+            background: rgba(233, 69, 96, 0.1);
+            border: 1px solid rgba(233, 69, 96, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .loan-info h3 {
+            color: #e94560;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .loan-info p {
+            color: #a0a0a0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .investment-card {
+            background: linear-gradient(135deg, #5f27cd 0%, #341f97 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .investment-card h3 {
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .investment-card .inv-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .investment-card .inv-detail {
+            text-align: center;
+        }
+
+        .investment-card .inv-label {
+            color: #a0a0a0;
+            font-size: 12px;
+        }
+
+        .investment-card .inv-value {
+            color: #00d2d3;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .filter-btn.active {
+            background: #e94560;
+            border-color: #e94560;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 20px;
+            margin: 30px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-slide.slide1 {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b81 100%);
+        }
+
+        .carousel-slide.slide2 {
+            background: linear-gradient(135deg, #00d2d3 0%, #00a8a9 100%);
+        }
+
+        .carousel-slide.slide3 {
+            background: linear-gradient(135deg, #5f27cd 0%, #8854d0 100%);
+        }
+
+        .carousel-slide h3 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-slide p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .carousel-dot.active {
+            background: white;
+            width: 30px;
+            border-radius: 6px;
+        }
+
+        .user-profile-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e94560 0%, #ff6b81 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+        }
+
+        .user-info h3 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+
+        .user-info p {
+            color: #a0a0a0;
+            font-size: 14px;
+        }
+
+        .user-data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .user-data-item {
+            background: rgba(15, 52, 96, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-data-item label {
+            display: block;
+            color: #a0a0a0;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .user-data-item .value {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .action-buttons {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px;
+            }
+
+            .action-btn-icon {
+                font-size: 36px;
+            }
+
+            .action-btn-text {
+                font-size: 11px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .balance-card .amount {
+                font-size: 36px;
+            }
+
+            .logo h1 {
+                font-size: 36px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .carousel-slide h3 {
+                font-size: 20px;
+            }
+
+            .carousel-slide p {
+                font-size: 14px;
+            }
+
+            .user-profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-data-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .action-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Tela Inicial -->
+        <div id="screen-home" class="screen active">
+            <div class="logo">
+                <div class="icon">🐯</div>
+                <h1>Tiger Bank</h1>
+                <p>Seu Banco Digital Completo</p>
+            </div>
+            <div class="card">
+                <button class="btn btn-primary" onclick="showScreen('login')">ENTRAR</button>
+                <button class="btn btn-success" onclick="showScreen('cadastro')">CRIAR CONTA</button>
+            </div>
+        </div>
+
+        <!-- Tela de Login -->
+        <div id="screen-login" class="screen">
+            <div class="card">
+                <h2>🔐 Login</h2>
+                <div id="login-alert"></div>
+                <form id="login-form" onsubmit="fazerLogin(event)">
+                    <div class="form-group">
+                        <label>
+                            E-mail
+                        </label>
+                        <input type="email" id="login-email" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Senha
+                        </label>
+                        <input type="password" id="login-senha" placeholder="Digite sua senha" required>
+                    </div>
+                    <button type="button" class="btn-forgot" onclick="recuperarSenha()">
+                        Esqueci minha senha
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        ENTRAR
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="showScreen('home')">
+                        VOLTAR
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tela de Cadastro -->
+        <div id="screen-cadastro" class="screen">
+            <div class="card">
+                <h2>📝 Criar Conta</h2>
+                <div id="cadastro-alert"></div>
+                <form id="cadastro-form" onsubmit="criarConta(event)">
+                    <div class="form-group">
+                        <label>CPF (somente números)</label>
+                        <input type="text" id="cad-cpf" placeholder="12345678900" maxlength="11" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" id="cad-nome" placeholder="João da Silva" required>
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" id="cad-email" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha (mínimo 8 caracteres)</label>
+                        <input type="password" id="cad-senha" placeholder="Digite sua senha" minlength="8" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmar Senha</label>
+                        <input type="password" id="cad-conf-senha" placeholder="Digite a senha novamente" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Conta</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="tipo-conta" value="Corrente" checked>
+                                Conta Corrente
+                            </label>
+                            <label>
+                                <input type="radio" name="tipo-conta" value="Poupança">
+                                Conta Poupança
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">CRIAR CONTA</button>
+                    <button type="button" class="btn btn-secondary" onclick="showScreen('home')">VOLTAR</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tela Principal (Dashboard) -->
+        <div id="screen-dashboard" class="screen">
+            <div class="header">
+                <h1>🐯 Tiger Bank</h1>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-info" onclick="showScreen('perfil')"
+                        style="width: auto; padding: 10px 20px;">PERFIL</button>
+                    <button class="btn btn-warning" onclick="logout()"
+                        style="width: auto; padding: 10px 20px;">SAIR</button>
+                </div>
+            </div>
+            <div class="dashboard">
+                <div class="welcome" id="welcome-text">Olá! 👋</div>
+
+                <!-- Carrossel de Propagandas -->
+                <div class="carousel-container">
+                    <div class="carousel-slide slide1 active">
+                        <div>
+                            <h3>🎉 Cashback de 5%</h3>
+                            <p>Ganhe 5% de volta em todas as suas compras com o cartão Tiger!</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide slide2">
+                        <div>
+                            <h3>📈 Investimentos Inteligentes</h3>
+                            <p>Comece a investir com apenas R$ 100 e veja seu dinheiro crescer!</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide slide3">
+                        <div>
+                            <h3>⚡ PIX Instantâneo</h3>
+                            <p>Transferências em segundos, 24 horas por dia, 7 dias por semana!</p>
+                        </div>
+                    </div>
+                    <div class="carousel-dots">
+                        <div class="carousel-dot active" onclick="mudarSlide(0)"></div>
+                        <div class="carousel-dot" onclick="mudarSlide(1)"></div>
+                        <div class="carousel-dot" onclick="mudarSlide(2)"></div>
+                    </div>
+                </div>
+
+                <div class="balance-card">
+                    <div class="label">💰 Saldo Disponível</div>
+                    <div class="amount" id="saldo-display">R$ 0,00</div>
+                    <div class="type" id="tipo-conta-display">Conta Corrente</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-label">Transações</div>
+                        <div class="stat-value" id="total-transacoes">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💸</div>
+                        <div class="stat-label">Gastos do Mês</div>
+                        <div class="stat-value" id="gastos-mes">R$ 0,00</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <div class="action-btn" onclick="showScreen('deposito')">
+                        <div class="action-btn-icon">💵</div>
+                        <div class="action-btn-text">Depositar</div>
+                    </div>
+                    <div class="action-btn green" onclick="showScreen('saque')">
+                        <div class="action-btn-icon">💸</div>
+                        <div class="action-btn-text">Sacar</div>
+                    </div>
+                    <div class="action-btn" onclick="showScreen('transferencia')">
+                        <div class="action-btn-icon">🔄</div>
+                        <div class="action-btn-text">Transferir</div>
+                    </div>
+                    <div class="action-btn green" onclick="showScreen('pix')">
+                        <div class="action-btn-icon">⚡</div>
+                        <div class="action-btn-text">PIX</div>
+                    </div>
+                    <div class="action-btn purple" onclick="showScreen('emprestimo')">
+                        <div class="action-btn-icon">💰</div>
+                        <div class="action-btn-text">Empréstimo</div>
+                    </div>
+                    <div class="action-btn purple" onclick="showScreen('investimentos')">
+                        <div class="action-btn-icon">📈</div>
+                        <div class="action-btn-text">Investir</div>
+                    </div>
+                    <div class="action-btn green" onclick="showScreen('extrato')">
+                        <div class="action-btn-icon">📋</div>
+                        <div class="action-btn-text">Extrato</div>
+                    </div>
+                    <div class="action-btn" onclick="consultarSaldo()">
+                        <div class="action-btn-icon">💳</div>
+                        <div class="action-btn-text">Saldo</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela de Depósito -->
+        <div id="screen-deposito" class="screen">
+            <div class="card">
+                <h2>💵 Depositar</h2>
+                <div id="deposito-alert"></div>
+                <form id="deposito-form" onsubmit="realizarDeposito(event)">
+                    <div class="form-group">
+                        <label>Valor do Depósito</label>
+                        <input type="number" id="valor-deposito" placeholder="0.00" step="0.01" min="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição (opcional)</label>
+                        <input type="text" id="desc-deposito" placeholder="Ex: Salário, Freelance...">
+                    </div>
+                    <button type="submit" class="btn btn-success">CONFIRMAR DEPÓSITO</button>
+                    <button type="button" class="btn btn-secondary" onclick="voltarDashboard()">VOLTAR</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tela de Saque -->
+        <div id="screen-saque" class="screen">
+            <div class="card">
+                <h2>💸 Sacar</h2>
+                <div id="saque-alert"></div>
+                <form id="saque-form" onsubmit="realizarSaque(event)">
+                    <div class="form-group">
+                        <label>Valor do Saque</label>
+                        <input type="number" id="valor-saque" placeholder="0.00" step="0.01" min="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição (opcional)</label>
+                        <input type="text" id="desc-saque" placeholder="Ex: Compras, Contas...">
+                    </div>
+                    <button type="submit" class="btn btn-primary">CONFIRMAR SAQUE</button>
+                    <button type="button" class="btn btn-secondary" onclick="voltarDashboard()">VOLTAR</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tela de Transferência -->
+        <div id="screen-transferencia" class="screen">
+            <div class="card">
+                <h2>🔄 Transferir</h2>
+                <div id="transferencia-alert"></div>
+                <form id="transferencia-form" onsubmit="realizarTransferencia(event)">
+                    <div class="form-group">
+                        <label>CPF do Destinatário</label>
+                        <input type="text" id="cpf-destinatario" placeholder="12345678900" maxlength="11" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Valor da Transferência</label>
+                        <input type="number" id="valor-transferencia" placeholder="0.00" step="0.01" min="0.01"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição (opcional)</label>
+                        <input type="text" id="desc-transferencia" placeholder="Ex: Pagamento, Presente...">
+                    </div>
+                    <button type="submit" class="btn btn-success">CONFIRMAR TRANSFERÊNCIA</button>
+                    <button type="button" class="btn btn-secondary" onclick="voltarDashboard()">VOLTAR</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tela de PIX -->
+        <div id="screen-pix" class="screen">
+            <div class="card">
+                <h2>⚡ PIX</h2>
+                <div id="pix-alert"></div>
+                <form id="pix-form" onsubmit="realizarPix(event)">
+                    <div class="form-group">
+                        <label>Tipo de Chave</label>
+                        <select id="tipo-chave-pix" required>
+                            <option value="CPF">CPF</option>
+                            <option value="E-mail">E-mail</option>
+                            <option value="Celular">Celular</option>
+                            <option value="Aleatória">Chave Aleatória</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Chave PIX</label>
+                        <input type="text" id="chave-pix" placeholder="Digite a chave PIX" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Valor do PIX</label>
+                        <input type="number" id="valor-pix" placeholder="0.00" step="0.01" min="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição (opcional)</label>
+                        <input type="text" id="desc-pix" placeholder="Ex: Pagamento, Divisão de conta...">
+                    </div>
+                    <button type="submit" class="btn btn-success">CONFIRMAR PIX</button>
+                    <button type="button" class="btn btn-secondary" onclick="voltarDashboard()">VOLTAR</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tela de Empréstimo -->
+        <div id="screen-emprestimo" class="screen">
+            <div class="card">
+                <h2>💰 Empréstimo</h2>
+                <div class="loan-info">
+                    <h3>📋 Informações Importantes</h3>
+                    <p>• Taxa de juros: 2,5% ao mês<br>
+                        • Prazo máximo: 24 meses<br>
+                        • Aprovação instantânea<br>
+                        • Pagamento em parcelas fixas</p>
+                </div>
+                <div id="emprestimo-alert"></div>
+                <form id="emprestimo-form" onsubmit="solicitarEmprestimo(event)">
+                    <div class="form-group">
+                        <label>Valor do Empréstimo</label>
+                        <input type="number" id="valor-emprestimo" placeholder="0.00" step="100" min="500" max="50000"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Parcelas</label>
+                        <select id="parcelas-emprestimo" required onchange="calcularEmprestimo()">
+                            <option value="">Selecione</option>
+                            <option value="6">6 meses</option>
+                            <option value="12">12 meses</option>
+                            <option value="18">18 meses</option>
+                            <option value="24">24 meses</option>
+                        </select>
+                    </div>
+                    <div id="simulacao-emprestimo"></div>
+                    <button type="submit" class="btn btn-success">SOLICITAR EMPRÉSTIMO</button>
+                    <button type="button" class="btn btn-secondary" onclick="voltarDashboard()">VOLTAR</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tela de Investimentos -->
+        <div id="screen-investimentos" class="screen">
+            <div class="card">
+                <h2>📈 Investimentos</h2>
+
+                <div id="investimentos-ativos"></div>
+
+                <div id="investimentos-alert"></div>
+                <form id="investimentos-form" onsubmit="realizarInvestimento(event)">
+                    <div class="form-group">
+                        <label>Tipo de Investimento</label>
+                        <select id="tipo-investimento" required onchange="atualizarInfoInvestimento()">
+                            <option value="">Selecione</option>
+                            <option value="poupanca">Poupança (0,5% ao mês)</option>
+                            <option value="cdb">CDB (1% ao mês)</option>
+                            <option value="acoes">Ações (variável)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Valor do Investimento</label>
+                        <input type="number" id="valor-investimento" placeholder="0.00" step="0.01" min="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Período (meses)</label>
+                        <select id="periodo-investimento" required onchange="calcularRetornoInvestimento()">
+                            <option value="">Selecione</option>
+                            <option value="3">3 meses</option>
+                            <option value="6">6 meses</option>
+                            <option value="12">12 meses</option>
+                            <option value="24">24 meses</option>
+                        </select>
+                    </div>
+                    <div id="projecao-investimento"></div>
+                    <button type="submit" class="btn btn-success">INVESTIR AGORA</button>
+                    <button type="button" class="btn btn-secondary" onclick="voltarDashboard()">VOLTAR</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tela de Extrato -->
+        <div id="screen-extrato" class="screen">
+            <div class="card">
+                <h2>📋 Extrato Bancário</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filtrarExtrato('todos')">Todos</button>
+                    <button class="filter-btn" onclick="filtrarExtrato('entrada')">Entradas</button>
+                    <button class="filter-btn" onclick="filtrarExtrato('saida')">Saídas</button>
+                    <button class="filter-btn" onclick="filtrarExtrato('pix')">PIX</button>
+                    <button class="filter-btn" onclick="filtrarExtrato('investimento')">Investimentos</button>
+                </div>
+                <div class="extrato-list" id="extrato-list">
+                    <!-- Transações serão inseridas aqui -->
+                </div>
+                <button class="btn btn-secondary" onclick="voltarDashboard()">VOLTAR</button>
+            </div>
+        </div>
+
+        <!-- Tela de Perfil do Usuário -->
+        <div id="screen-perfil" class="screen">
+            <div class="card">
+                <h2>👤 Meu Perfil</h2>
+
+                <div class="user-profile-section">
+                    <div class="user-profile-header">
+                        <div class="user-avatar" id="user-avatar">👤</div>
+                        <div class="user-info">
+                            <h3 id="profile-nome">Nome do Usuário</h3>
+                            <p id="profile-tipo-conta">Conta Corrente</p>
+                        </div>
+                    </div>
+
+                    <div class="user-data-grid">
+                        <div class="user-data-item">
+                            <label>CPF</label>
+                            <div class="value" id="profile-cpf">000.000.000-00</div>
+                        </div>
+                        <div class="user-data-item">
+                            <label>E-mail</label>
+                            <div class="value" id="profile-email">email@exemplo.com</div>
+                        </div>
+                        <div class="user-data-item">
+                            <label>Saldo Atual</label>
+                            <div class="value" id="profile-saldo">R$ 0,00</div>
+                        </div>
+                        <div class="user-data-item">
+                            <label>Membro desde</label>
+                            <div class="value" id="profile-membro">2024</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="perfil-alert"></div>
+
+                <h3 style="margin: 30px 0 20px 0; text-align: center;">✏️ Editar Informações</h3>
+
+                <form id="perfil-form" onsubmit="atualizarPerfil(event)">
+                    <div class="form-group">
+                        <label>Novo Nome Completo</label>
+                        <input type="text" id="edit-nome" placeholder="Digite o novo nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Novo E-mail</label>
+                        <input type="email" id="edit-email" placeholder="Digite o novo e-mail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha Atual (para confirmar alterações)</label>
+                        <input type="password" id="edit-senha-atual" placeholder="Digite sua senha atual" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">SALVAR ALTERAÇÕES</button>
+                </form>
+
+                <h3 style="margin: 30px 0 20px 0; text-align: center;">🔒 Alterar Senha</h3>
+
+                <form id="senha-form" onsubmit="alterarSenha(event)">
+                    <div class="form-group">
+                        <label>Senha Atual</label>
+                        <input type="password" id="senha-atual" placeholder="Digite sua senha atual" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nova Senha (mínimo 8 caracteres)</label>
+                        <input type="password" id="nova-senha" placeholder="Digite a nova senha" minlength="8" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmar Nova Senha</label>
+                        <input type="password" id="confirmar-nova-senha" placeholder="Confirme a nova senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">ALTERAR SENHA</button>
+                </form>
+
+                <button class="btn btn-secondary" onclick="voltarDashboard()">VOLTAR</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sistema de armazenamento em memória
+        let usuarios = {};
+        let usuarioLogado = null;
+        let filtroAtivo = 'todos';
+        let slideAtual = 0;
+        let carrosselInterval;
+
+        // Iniciar carrossel automático
+        function iniciarCarrossel() {
+            carrosselInterval = setInterval(() => {
+                slideAtual = (slideAtual + 1) % 3;
+                mudarSlide(slideAtual);
+            }, 5000);
+        }
+
+        function mudarSlide(index) {
+            slideAtual = index;
+
+            const slides = document.querySelectorAll('.carousel-slide');
+            const dots = document.querySelectorAll('.carousel-dot');
+
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                }
+            });
+
+            dots.forEach((dot, i) => {
+                dot.classList.remove('active');
+                if (i === index) {
+                    dot.classList.add('active');
+                }
+            });
+
+            clearInterval(carrosselInterval);
+            iniciarCarrossel();
+        }
+
+        function showScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById('screen-' + screenName).classList.add('active');
+
+            document.querySelectorAll('[id$="-alert"]').forEach(alert => {
+                alert.innerHTML = '';
+            });
+
+            if (screenName === 'investimentos') {
+                mostrarInvestimentosAtivos();
+            }
+
+            if (screenName === 'perfil') {
+                carregarDadosPerfil();
+            }
+
+            if (screenName === 'dashboard') {
+                iniciarCarrossel();
+            } else {
+                clearInterval(carrosselInterval);
+            }
+        }
+
+        function showAlert(elementId, message, type) {
+            const alertDiv = document.getElementById(elementId);
+            alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        function validarCPF(cpf) {
+            return /^\d{11}$/.test(cpf);
+        }
+
+        function validarEmail(email) {
+            return /^[\w\.-]+@[\w\.-]+\.\w+$/.test(email);
+        }
+
+        function validarSenha(senha) {
+            if (senha.length < 8) return false;
+            if (!/[A-Z]/.test(senha)) return false;
+            if (!/[a-z]/.test(senha)) return false;
+            if (!/\d/.test(senha)) return false;
+            return true;
+        }
+
+        function adicionarTransacao(tipo, valor, descricao) {
+            const dados = usuarios[usuarioLogado];
+            const agora = new Date().toLocaleString('pt-BR');
+
+            dados.saldo += valor;
+
+            dados.extrato.push({
+                tipo: tipo,
+                valor: valor,
+                data: agora,
+                descricao: descricao,
+                saldoApos: dados.saldo
+            });
+        }
+
+        function calcularEstatisticas() {
+            const dados = usuarios[usuarioLogado];
+            const dataAtual = new Date();
+            const mesAtual = dataAtual.getMonth();
+            const anoAtual = dataAtual.getFullYear();
+
+            let gastosMes = 0;
+
+            dados.extrato.forEach(transacao => {
+                if (transacao.valor < 0) {
+                    const dataTransacao = new Date(transacao.data.split(',')[0].split('/').reverse().join('-'));
+                    if (dataTransacao.getMonth() === mesAtual && dataTransacao.getFullYear() === anoAtual) {
+                        gastosMes += Math.abs(transacao.valor);
+                    }
+                }
+            });
+
+            return {
+                totalTransacoes: dados.extrato.length,
+                gastosMes: gastosMes
+            };
+        }
+
+        function criarConta(event) {
+            event.preventDefault();
+
+            const cpf = document.getElementById('cad-cpf').value;
+            const nome = document.getElementById('cad-nome').value;
+            const email = document.getElementById('cad-email').value;
+            const senha = document.getElementById('cad-senha').value;
+            const confSenha = document.getElementById('cad-conf-senha').value;
+            const tipoConta = document.querySelector('input[name="tipo-conta"]:checked').value;
+
+            if (!validarCPF(cpf)) {
+                showAlert('cadastro-alert', 'CPF inválido! Digite apenas 11 números.', 'error');
+                return;
+            }
+
+            if (usuarios[cpf]) {
+                showAlert('cadastro-alert', 'CPF já cadastrado!', 'error');
+                return;
+            }
+
+            if (!validarEmail(email)) {
+                showAlert('cadastro-alert', 'E-mail inválido!', 'error');
+                return;
+            }
+
+            if (!validarSenha(senha)) {
+                showAlert('cadastro-alert',
+                    'Senha deve ter no mínimo 8 caracteres, incluindo letras maiúsculas, minúsculas e números.',
+                    'error');
+                return;
+            }
+
+            if (senha !== confSenha) {
+                showAlert('cadastro-alert', 'As senhas não coincidem!', 'error');
+                return;
+            }
+
+            usuarios[cpf] = {
+                nome: nome,
+                email: email,
+                senha: senha,
+                tipo: tipoConta,
+                saldo: 0.00,
+                emprestimos: [],
+                investimentos: [],
+                extrato: [{
+                    tipo: 'Abertura',
+                    valor: 0.00,
+                    data: new Date().toLocaleString('pt-BR'),
+                    descricao: 'Abertura de conta',
+                    saldoApos: 0.00
+                }]
+            };
+
+            showAlert('cadastro-alert', `Conta criada com sucesso! Bem-vindo(a), ${nome}! 🎉`, 'success');
+
+            setTimeout(() => {
+                document.getElementById('cadastro-form').reset();
+                showScreen('home');
+            }, 2000);
+        }
+
+        function fazerLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('login-email').value;
+            const senha = document.getElementById('login-senha').value;
+
+            for (const [cpf, dados] of Object.entries(usuarios)) {
+                if (dados.email === email && dados.senha === senha) {
+                    usuarioLogado = cpf;
+                    showAlert('login-alert', `Bem-vindo(a), ${dados.nome}!`, 'success');
+
+                    setTimeout(() => {
+                        atualizarDashboard();
+                        showScreen('dashboard');
+                        iniciarCarrossel();
+                    }, 1000);
+                    return;
+                }
+            }
+
+            showAlert('login-alert', 'E-mail ou senha incorretos!', 'error');
+        }
+
+        function carregarDadosPerfil() {
+            const dados = usuarios[usuarioLogado];
+            const primeiroNome = dados.nome.split(' ')[0];
+            const avatar = primeiroNome.charAt(0).toUpperCase();
+
+            document.getElementById('user-avatar').textContent = avatar;
+            document.getElementById('profile-nome').textContent = dados.nome;
+            document.getElementById('profile-tipo-conta').textContent = `Conta ${dados.tipo}`;
+            document.getElementById('profile-cpf').textContent = formatarCPF(usuarioLogado);
+            document.getElementById('profile-email').textContent = dados.email;
+            document.getElementById('profile-saldo').textContent = `R$ ${dados.saldo.toFixed(2).replace('.', ',')}`;
+
+            const dataAbertura = dados.extrato[0]?.data || new Date().toLocaleString('pt-BR');
+            const ano = dataAbertura.split('/')[2].split(',')[0];
+            document.getElementById('profile-membro').textContent = ano;
+
+            document.getElementById('edit-nome').value = dados.nome;
+            document.getElementById('edit-email').value = dados.email;
+        }
+
+        function formatarCPF(cpf) {
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        }
+
+        function atualizarPerfil(event) {
+            event.preventDefault();
+
+            const novoNome = document.getElementById('edit-nome').value;
+            const novoEmail = document.getElementById('edit-email').value;
+            const senhaAtual = document.getElementById('edit-senha-atual').value;
+            const dados = usuarios[usuarioLogado];
+
+            if (dados.senha !== senhaAtual) {
+                showAlert('perfil-alert', 'Senha atual incorreta!', 'error');
+                return;
+            }
+
+            if (!validarEmail(novoEmail)) {
+                showAlert('perfil-alert', 'E-mail inválido!', 'error');
+                return;
+            }
+
+            // Verificar se o email já está em uso por outro usuário
+            for (const [cpf, user] of Object.entries(usuarios)) {
+                if (cpf !== usuarioLogado && user.email === novoEmail) {
+                    showAlert('perfil-alert', 'Este e-mail já está em uso!', 'error');
+                    return;
+                }
+            }
+
+            dados.nome = novoNome;
+            dados.email = novoEmail;
+
+            showAlert('perfil-alert', 'Perfil atualizado com sucesso! ✅', 'success');
+            carregarDadosPerfil();
+            atualizarDashboard();
+
+            document.getElementById('edit-senha-atual').value = '';
+        }
+
+        function alterarSenha(event) {
+            event.preventDefault();
+
+            const senhaAtual = document.getElementById('senha-atual').value;
+            const novaSenha = document.getElementById('nova-senha').value;
+            const confirmarSenha = document.getElementById('confirmar-nova-senha').value;
+            const dados = usuarios[usuarioLogado];
+
+            if (dados.senha !== senhaAtual) {
+                showAlert('perfil-alert', 'Senha atual incorreta!', 'error');
+                return;
+            }
+
+            if (!validarSenha(novaSenha)) {
+                showAlert('perfil-alert',
+                    'A nova senha deve ter no mínimo 8 caracteres, incluindo letras maiúsculas, minúsculas e números.',
+                    'error');
+                return;
+            }
+
+            if (novaSenha !== confirmarSenha) {
+                showAlert('perfil-alert', 'As senhas não coincidem!', 'error');
+                return;
+            }
+
+            if (senhaAtual === novaSenha) {
+                showAlert('perfil-alert', 'A nova senha deve ser diferente da atual!', 'error');
+                return;
+            }
+
+            dados.senha = novaSenha;
+
+            showAlert('perfil-alert', 'Senha alterada com sucesso! 🔒', 'success');
+
+            document.getElementById('senha-form').reset();
+        }
+
+        function atualizarDashboard() {
+            const dados = usuarios[usuarioLogado];
+            const stats = calcularEstatisticas();
+
+            document.getElementById('welcome-text').textContent = `Olá, ${dados.nome.split(' ')[0]}! 👋`;
+            document.getElementById('saldo-display').textContent = `R$ ${dados.saldo.toFixed(2).replace('.', ',')}`;
+            document.getElementById('tipo-conta-display').textContent = `Conta ${dados.tipo}`;
+            document.getElementById('total-transacoes').textContent = stats.totalTransacoes;
+            document.getElementById('gastos-mes').textContent = `R$ ${stats.gastosMes.toFixed(2).replace('.', ',')}`;
+        }
+
+        function consultarSaldo() {
+            const dados = usuarios[usuarioLogado];
+            const agora = new Date().toLocaleString('pt-BR');
+            const stats = calcularEstatisticas();
+
+            const mensagem = `💰 Saldo Disponível: R$ ${dados.saldo.toFixed(2).replace('.', ',')}\n\n` +
+                `📊 Tipo: Conta ${dados.tipo}\n` +
+                `📈 Transações: ${stats.totalTransacoes}\n` +
+                `💸 Gastos do Mês: R$ ${stats.gastosMes.toFixed(2).replace('.', ',')}\n` +
+                `🕐 Atualizado em: ${agora}`;
+
+            alert(mensagem);
+            atualizarDashboard();
+        }
+
+        function realizarDeposito(event) {
+            event.preventDefault();
+
+            const valor = parseFloat(document.getElementById('valor-deposito').value);
+            const descricao = document.getElementById('desc-deposito').value || 'Depósito em conta';
+
+            if (valor <= 0) {
+                showAlert('deposito-alert', 'Valor inválido!', 'error');
+                return;
+            }
+
+            adicionarTransacao('Depósito', valor, descricao);
+            showAlert('deposito-alert', `Depósito de R$ ${valor.toFixed(2).replace('.', ',')} realizado com sucesso!`, 'success');
+
+            setTimeout(() => {
+                document.getElementById('deposito-form').reset();
+                voltarDashboard();
+            }, 2000);
+        }
+
+        function realizarSaque(event) {
+            event.preventDefault();
+
+            const valor = parseFloat(document.getElementById('valor-saque').value);
+            const descricao = document.getElementById('desc-saque').value || 'Saque em conta';
+            const dados = usuarios[usuarioLogado];
+
+            if (valor <= 0) {
+                showAlert('saque-alert', 'Valor inválido!', 'error');
+                return;
+            }
+
+            if (valor > dados.saldo) {
+                showAlert('saque-alert', 'Saldo insuficiente!', 'error');
+                return;
+            }
+
+            adicionarTransacao('Saque', -valor, descricao);
+            showAlert('saque-alert', `Saque de R$ ${valor.toFixed(2).replace('.', ',')} realizado com sucesso!`, 'success');
+
+            setTimeout(() => {
+                document.getElementById('saque-form').reset();
+                voltarDashboard();
+            }, 2000);
+        }
+
+        function realizarTransferencia(event) {
+            event.preventDefault();
+
+            const cpfDest = document.getElementById('cpf-destinatario').value;
+            const valor = parseFloat(document.getElementById('valor-transferencia').value);
+            const descricao = document.getElementById('desc-transferencia').value || 'Transferência bancária';
+            const dados = usuarios[usuarioLogado];
+
+            if (!validarCPF(cpfDest)) {
+                showAlert('transferencia-alert', 'CPF do destinatário inválido!', 'error');
+                return;
+            }
+
+            if (cpfDest === usuarioLogado) {
+                showAlert('transferencia-alert', 'Você não pode transferir para si mesmo!', 'error');
+                return;
+            }
+
+            if (!usuarios[cpfDest]) {
+                showAlert('transferencia-alert', 'Destinatário não encontrado!', 'error');
+                return;
+            }
+
+            if (valor <= 0) {
+                showAlert('transferencia-alert', 'Valor inválido!', 'error');
+                return;
+            }
+
+            if (valor > dados.saldo) {
+                showAlert('transferencia-alert', 'Saldo insuficiente!', 'error');
+                return;
+            }
+
+            const destinatario = usuarios[cpfDest];
+
+            adicionarTransacao('Transferência Enviada', -valor, `${descricao} - Para: ${destinatario.nome}`);
+
+            const agora = new Date().toLocaleString('pt-BR');
+            destinatario.saldo += valor;
+            destinatario.extrato.push({
+                tipo: 'Transferência Recebida',
+                valor: valor,
+                data: agora,
+                descricao: `${descricao} - De: ${dados.nome}`,
+                saldoApos: destinatario.saldo
+            });
+
+            showAlert('transferencia-alert', `Transferência de R$ ${valor.toFixed(2).replace('.', ',')} para ${destinatario.nome} realizada com sucesso!`, 'success');
+
+            setTimeout(() => {
+                document.getElementById('transferencia-form').reset();
+                voltarDashboard();
+            }, 2000);
+        }
+
+        function realizarPix(event) {
+            event.preventDefault();
+
+            const tipoChave = document.getElementById('tipo-chave-pix').value;
+            const chavePix = document.getElementById('chave-pix').value;
+            const valor = parseFloat(document.getElementById('valor-pix').value);
+            const descricao = document.getElementById('desc-pix').value || 'Pagamento via PIX';
+            const dados = usuarios[usuarioLogado];
+
+            if (valor <= 0) {
+                showAlert('pix-alert', 'Valor inválido!', 'error');
+                return;
+            }
+
+            if (valor > dados.saldo) {
+                showAlert('pix-alert', 'Saldo insuficiente!', 'error');
+                return;
+            }
+
+            let destinatario = null;
+
+            if (tipoChave === 'CPF') {
+                if (!validarCPF(chavePix)) {
+                    showAlert('pix-alert', 'CPF inválido!', 'error');
+                    return;
+                }
+                if (chavePix === usuarioLogado) {
+                    showAlert('pix-alert', 'Você não pode fazer PIX para si mesmo!', 'error');
+                    return;
+                }
+                destinatario = usuarios[chavePix];
+            } else if (tipoChave === 'E-mail') {
+                for (const [cpf, user] of Object.entries(usuarios)) {
+                    if (user.email === chavePix && cpf !== usuarioLogado) {
+                        destinatario = user;
+                        break;
+                    }
+                }
+            } else {
+                for (const [cpf, user] of Object.entries(usuarios)) {
+                    if (cpf !== usuarioLogado) {
+                        destinatario = user;
+                        break;
+                    }
+                }
+            }
+
+            if (!destinatario) {
+                showAlert('pix-alert', 'Chave PIX não encontrada!', 'error');
+                return;
+            }
+
+            adicionarTransacao('PIX Enviado', -valor, `${descricao} - Para: ${destinatario.nome}`);
+
+            const agora = new Date().toLocaleString('pt-BR');
+            destinatario.saldo += valor;
+            destinatario.extrato.push({
+                tipo: 'PIX Recebido',
+                valor: valor,
+                data: agora,
+                descricao: `${descricao} - De: ${dados.nome}`,
+                saldoApos: destinatario.saldo
+            });
+
+            showAlert('pix-alert', `PIX de R$ ${valor.toFixed(2).replace('.', ',')} para ${destinatario.nome} realizado com sucesso! ⚡`, 'success');
+
+            setTimeout(() => {
+                document.getElementById('pix-form').reset();
+                voltarDashboard();
+            }, 2000);
+        }
+
+        function calcularEmprestimo() {
+            const valor = parseFloat(document.getElementById('valor-emprestimo').value);
+            const parcelas = parseInt(document.getElementById('parcelas-emprestimo').value);
+
+            if (!valor || !parcelas) return;
+
+            const taxaMensal = 0.025;
+            const valorTotal = valor * Math.pow(1 + taxaMensal, parcelas);
+            const valorParcela = valorTotal / parcelas;
+
+            const simDiv = document.getElementById('simulacao-emprestimo');
+            simDiv.innerHTML = `
+                <div class="loan-info" style="background: rgba(0, 210, 211, 0.1); border-color: rgba(0, 210, 211, 0.3);">
+                    <h3 style="color: #00d2d3;">💡 Simulação do Empréstimo</h3>
+                    <p>
+                        <strong>Valor solicitado:</strong> R$ ${valor.toFixed(2).replace('.', ',')}<br>
+                        <strong>Parcelas:</strong> ${parcelas}x<br>
+                        <strong>Valor da parcela:</strong> R$ ${valorParcela.toFixed(2).replace('.', ',')}<br>
+                        <strong>Valor total a pagar:</strong> R$ ${valorTotal.toFixed(2).replace('.', ',')}
+                    </p>
+                </div>
+            `;
+        }
+
+        function solicitarEmprestimo(event) {
+            event.preventDefault();
+
+            const valor = parseFloat(document.getElementById('valor-emprestimo').value);
+            const parcelas = parseInt(document.getElementById('parcelas-emprestimo').value);
+            const dados = usuarios[usuarioLogado];
+
+            if (valor < 500 || valor > 50000) {
+                showAlert('emprestimo-alert', 'Valor deve estar entre R$ 500,00 e R$ 50.000,00!', 'error');
+                return;
+            }
+
+            const taxaMensal = 0.025;
+            const valorTotal = valor * Math.pow(1 + taxaMensal, parcelas);
+            const valorParcela = valorTotal / parcelas;
+
+            dados.emprestimos.push({
+                valor: valor,
+                parcelas: parcelas,
+                parcelasRestantes: parcelas,
+                valorParcela: valorParcela,
+                valorTotal: valorTotal,
+                dataContratacao: new Date().toLocaleString('pt-BR')
+            });
+
+            adicionarTransacao('Empréstimo Aprovado', valor, `Empréstimo aprovado - ${parcelas}x de R$ ${valorParcela.toFixed(2).replace('.', ',')}`);
+
+            showAlert('emprestimo-alert', `Empréstimo de R$ ${valor.toFixed(2).replace('.', ',')} aprovado! Valor creditado em sua conta. 🎉`, 'success');
+
+            setTimeout(() => {
+                document.getElementById('emprestimo-form').reset();
+                document.getElementById('simulacao-emprestimo').innerHTML = '';
+                voltarDashboard();
+            }, 2000);
+        }
+
+        function atualizarInfoInvestimento() {
+            const tipo = document.getElementById('tipo-investimento').value;
+            let info = '';
+
+            if (tipo === 'poupanca') {
+                info = 'Rendimento de 0,5% ao mês. Liquidez diária e baixo risco.';
+            } else if (tipo === 'cdb') {
+                info = 'Rendimento de 1% ao mês. Liquidez no vencimento e risco médio.';
+            } else if (tipo === 'acoes') {
+                info = 'Rendimento variável (simulado entre -2% e +5% ao mês). Alto risco.';
+            }
+        }
+
+        function calcularRetornoInvestimento() {
+            const tipo = document.getElementById('tipo-investimento').value;
+            const valor = parseFloat(document.getElementById('valor-investimento').value);
+            const periodo = parseInt(document.getElementById('periodo-investimento').value);
+
+            if (!tipo || !valor || !periodo) return;
+
+            let taxaMensal = 0;
+            if (tipo === 'poupanca') taxaMensal = 0.005;
+            else if (tipo === 'cdb') taxaMensal = 0.01;
+            else if (tipo === 'acoes') taxaMensal = 0.02;
+
+            const valorFinal = valor * Math.pow(1 + taxaMensal, periodo);
+            const rendimento = valorFinal - valor;
+
+            const projDiv = document.getElementById('projecao-investimento');
+            projDiv.innerHTML = `
+                <div class="loan-info" style="background: rgba(95, 39, 205, 0.1); border-color: rgba(95, 39, 205, 0.3);">
+                    <h3 style="color: #8854d0;">📊 Projeção de Rendimento</h3>
+                    <p>
+                        <strong>Investimento inicial:</strong> R$ ${valor.toFixed(2).replace('.', ',')}<br>
+                        <strong>Período:</strong> ${periodo} meses<br>
+                        <strong>Rendimento estimado:</strong> R$ ${rendimento.toFixed(2).replace('.', ',')}<br>
+                        <strong>Valor final estimado:</strong> R$ ${valorFinal.toFixed(2).replace('.', ',')}
+                    </p>
+                </div>
+            `;
+        }
+
+        function realizarInvestimento(event) {
+            event.preventDefault();
+
+            const tipo = document.getElementById('tipo-investimento').value;
+            const valor = parseFloat(document.getElementById('valor-investimento').value);
+            const periodo = parseInt(document.getElementById('periodo-investimento').value);
+            const dados = usuarios[usuarioLogado];
+
+            if (valor < 100) {
+                showAlert('investimentos-alert', 'Valor mínimo para investimento é R$ 100,00!', 'error');
+                return;
+            }
+
+            if (valor > dados.saldo) {
+                showAlert('investimentos-alert', 'Saldo insuficiente!', 'error');
+                return;
+            }
+
+            let taxaMensal = 0;
+            let tipoNome = '';
+            if (tipo === 'poupanca') {
+                taxaMensal = 0.005;
+                tipoNome = 'Poupança';
+            } else if (tipo === 'cdb') {
+                taxaMensal = 0.01;
+                tipoNome = 'CDB';
+            } else if (tipo === 'acoes') {
+                taxaMensal = 0.02;
+                tipoNome = 'Ações';
+            }
+
+            const dataInicio = new Date();
+            const dataVencimento = new Date(dataInicio);
+            dataVencimento.setMonth(dataVencimento.getMonth() + periodo);
+
+            dados.investimentos.push({
+                tipo: tipoNome,
+                valorInicial: valor,
+                taxaMensal: taxaMensal,
+                periodo: periodo,
+                dataInicio: dataInicio.toLocaleString('pt-BR'),
+                dataVencimento: dataVencimento.toLocaleString('pt-BR'),
+                ativo: true
+            });
+
+            adicionarTransacao('Investimento', -valor, `Investimento em ${tipoNome} - ${periodo} meses`);
+
+            showAlert('investimentos-alert', `Investimento de R$ ${valor.toFixed(2).replace('.', ',')} em ${tipoNome} realizado com sucesso! 📈`, 'success');
+
+            setTimeout(() => {
+                document.getElementById('investimentos-form').reset();
+                document.getElementById('projecao-investimento').innerHTML = '';
+                voltarDashboard();
+            }, 2000);
+        }
+
+        function mostrarInvestimentosAtivos() {
+            const dados = usuarios[usuarioLogado];
+            const divAtivos = document.getElementById('investimentos-ativos');
+
+            if (!dados.investimentos || dados.investimentos.length === 0) {
+                divAtivos.innerHTML = '';
+                return;
+            }
+
+            let html = '<h3 style="margin-bottom: 20px;">💼 Seus Investimentos</h3>';
+
+            dados.investimentos.forEach((inv, index) => {
+                if (inv.ativo) {
+                    const valorAtual = inv.valorInicial * Math.pow(1 + inv.taxaMensal, inv.periodo);
+                    const rendimento = valorAtual - inv.valorInicial;
+
+                    html += `
+                        <div class="investment-card">
+                            <h3>${inv.tipo}</h3>
+                            <p>Investimento inicial: R$ ${inv.valorInicial.toFixed(2).replace('.', ',')}</p>
+                            <div class="inv-details">
+                                <div class="inv-detail">
+                                    <div class="inv-label">Rendimento</div>
+                                    <div class="inv-value">R$ ${rendimento.toFixed(2).replace('.', ',')}</div>
+                                </div>
+                                <div class="inv-detail">
+                                    <div class="inv-label">Valor Atual</div>
+                                    <div class="inv-value">R$ ${valorAtual.toFixed(2).replace('.', ',')}</div>
+                                </div>
+                                <div class="inv-detail">
+                                    <div class="inv-label">Vencimento</div>
+                                    <div class="inv-value" style="font-size: 14px;">${inv.dataVencimento.split(',')[0]}</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-warning" style="margin-top: 15px;" onclick="resgatarInvestimento(${index})">RESGATAR</button>
+                        </div>
+                    `;
+                }
+            });
+
+            divAtivos.innerHTML = html;
+        }
+
+        function resgatarInvestimento(index) {
+            if (!confirm('Deseja realmente resgatar este investimento?')) return;
+
+            const dados = usuarios[usuarioLogado];
+            const inv = dados.investimentos[index];
+
+            const valorAtual = inv.valorInicial * Math.pow(1 + inv.taxaMensal, inv.periodo);
+            const rendimento = valorAtual - inv.valorInicial;
+
+            inv.ativo = false;
+            adicionarTransacao('Resgate de Investimento', valorAtual, `Resgate de ${inv.tipo} - Rendimento: R$ ${rendimento.toFixed(2).replace('.', ',')}`);
+
+            alert(`Investimento resgatado com sucesso!\n\nValor creditado: R$ ${valorAtual.toFixed(2).replace('.', ',')}\nRendimento: R$ ${rendimento.toFixed(2).replace('.', ',')}`);
+
+            mostrarInvestimentosAtivos();
+            atualizarDashboard();
+        }
+
+        function filtrarExtrato(tipo) {
+            filtroAtivo = tipo;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            mostrarExtrato();
+        }
+
+        function voltarDashboard() {
+            atualizarDashboard();
+            showScreen('dashboard');
+            iniciarCarrossel();
+        }
+
+        function mostrarExtrato() {
+            const dados = usuarios[usuarioLogado];
+            const extratoList = document.getElementById('extrato-list');
+            extratoList.innerHTML = '';
+
+            if (dados.extrato.length === 0) {
+                extratoList.innerHTML = '<p class="info-text">Nenhuma transação encontrada.</p>';
+                return;
+            }
+
+            let extratoFiltrado = dados.extrato;
+
+            if (filtroAtivo === 'entrada') {
+                extratoFiltrado = dados.extrato.filter(t => t.valor >= 0);
+            } else if (filtroAtivo === 'saida') {
+                extratoFiltrado = dados.extrato.filter(t => t.valor < 0);
+            } else if (filtroAtivo === 'pix') {
+                extratoFiltrado = dados.extrato.filter(t => t.tipo.includes('PIX'));
+            } else if (filtroAtivo === 'investimento') {
+                extratoFiltrado = dados.extrato.filter(t => t.tipo.includes('Investimento') || t.tipo.includes('Resgate'));
+            }
+
+            const extratoRevertido = [...extratoFiltrado].reverse();
+
+            extratoRevertido.forEach(transacao => {
+                const isPositive = transacao.valor >= 0;
+                const icon = isPositive ? '↓' : '↑';
+                const classType = isPositive ? 'positive' : 'negative';
+                const sinal = isPositive ? '+' : '-';
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `transaction-item ${classType}`;
+                itemDiv.innerHTML = `
+                    <div class="transaction-date">📅 ${transacao.data}</div>
+                    <div class="transaction-header">
+                        <div class="transaction-type">${icon} ${transacao.tipo}</div>
+                        <div class="transaction-value ${classType}">${sinal} R$ ${Math.abs(transacao.valor).toFixed(2).replace('.', ',')}</div>
+                    </div>
+                    <div class="transaction-description">${transacao.descricao}</div>
+                    <div class="transaction-description">Saldo após: R$ ${transacao.saldoApos.toFixed(2).replace('.', ',')}</div>
+                `;
+                extratoList.appendChild(itemDiv);
+            });
+        }
+
+        function logout() {
+            if (confirm('Deseja realmente sair?')) {
+                usuarioLogado = null;
+                filtroAtivo = 'todos';
+                clearInterval(carrosselInterval);
+                document.getElementById('login-form').reset();
+                showScreen('home');
+                alert('Você saiu da sua conta com segurança!');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.target.id === 'screen-extrato' &&
+                        mutation.target.classList.contains('active')) {
+                        mostrarExtrato();
+                    }
+                });
+            });
+
+            const extratoScreen = document.getElementById('screen-extrato');
+            observer.observe(extratoScreen, { attributes: true, attributeFilter: ['class'] });
+        });
+    </script>
+</body>
+
+</html>
