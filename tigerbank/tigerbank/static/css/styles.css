@@ -386,66 +386,133 @@ button[type="submit"] + a.btn.btn-secondary:focus-visible{
 }
 
 .profile-card {
-  background-color: #1e1e2f;
-  padding: 20px;
-  border-radius: 15px;
-  color: #fff;
-  max-width: 600px;
-  margin: auto;
+    background-color: #1e1e2f;
+    padding: 20px;
+    border-radius: 15px;
+    color: #fff;
+    max-width: 600px;
+    margin: auto;
 }
 
 .user-header {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 .user-avatar {
-  background-color: #ff5c5c;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: bold;
+    background-color: #ff5c5c;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .user-info h3 {
-  margin: 0;
-  font-size: 20px;
-}
+    margin: 0;
+    font-size: 20px;
+    }
 
 .user-info p {
-  margin: 0;
-  color: #aaa;
+    margin: 0;
+    color: #aaa;
 }
 
 .user-data-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
 }
 
 .user-data-item {
-  background-color: #2a2a40;
-  border-radius: 10px;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
+    background-color: #2a2a40;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 .user-data-item label {
-  font-size: 12px;
-  color: #aaa;
-  margin-bottom: 5px;
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 5px;
 }
 
 .user-data-item .value {
-  font-size: 16px;
-  font-weight: bold;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.login-card {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 40px 32px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, .05);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, .25);
+    backdrop-filter: blur(12px);
+}
+
+.login-title {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 30px;
+    color: #fff;
+    letter-spacing: .5px;
+}
+
+.password-group {
+    position: relative;
+}
+
+.forgot-password-btn {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #00d2d3;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color .25s, transform .2s;
+}
+
+.forgot-password-btn:hover {
+    color: #00ffff;
+    transform: translateY(-1px);
+}
+
+.forgot-password-btn::after {
+    content: "";
+    display: block;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(135deg,#00d2d3,#00a8a9);
+    transition: width .3s ease;
+}
+
+.forgot-password-btn:hover::after {
+    width: 100%;
+}
+
+.btn-back {
+    width: 100%;
+    margin-top: 14px;
+    background: linear-gradient(135deg,#00d2d3 0%,#00a8a9 100%) !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,.35);
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: opacity .25s, transform .15s;
+}
+
+.btn-back:hover {
+    opacity: .9;
+    transform: translateY(-2px);
 }
 
 @media(max-width:768px){

@@ -30,7 +30,7 @@ def login():
 def register():
     if request.method == "POST":
         cpf_raw = request.form.get("cpf", "")
-        cpf = normalize_digits(cpf_raw)  # só dígitos
+        cpf = normalize_digits(cpf_raw)
         name = request.form.get("name", "").strip()
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
@@ -44,21 +44,25 @@ def register():
         elif User.query.filter((User.cpf == cpf) | (User.email == email)).first():
             flash("CPF ou e-mail já cadastrado", "error")
         else:
-            user = User(
-                cpf=cpf,
-                name=name,
-                email=email,
-                password_hash=hash_password(password),
-            )
+            user = User(cpf=cpf, name=name, email=email, # pyright: ignore[reportCallIssue]
+                        password_hash=hash_password(password)) # pyright: ignore[reportCallIssue]
             db.session.add(user)
             db.session.flush()
-            acc = Account(user_id=user.id, type=acc_type, balance=0)
+            acc = Account(user_id=user.id, type=acc_type, balance=0) # pyright: ignore[reportCallIssue]
             db.session.add(acc)
             db.session.commit()
             login_user(user)
             return redirect(url_for("dashboard.index"))
-
     return render_template("register.html")
+
+
+@bp.route("/esqueci-minha-senha", methods=["GET", "POST"], endpoint="esqueci_senha")
+def esqueci_senha():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip().lower()
+        flash("Se o e-mail existir, enviaremos instruções de redefinição.", "success")
+        return redirect(url_for("auth.login"))
+    return render_template("esqueci_senha.html")
 
 @bp.post("/logout")
 def logout():

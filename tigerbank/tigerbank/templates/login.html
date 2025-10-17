@@ -1,20 +1,28 @@
-
 {% extends 'base.html' %}
 {% block title %}Login - Tiger Bank{% endblock %}
 {% block content %}
-<div class="card">
-  <h2>🔐 Login</h2>
-  <form method="post">
+<div class="logo" style="margin-top:40px">
+  <div class="icon">🐯</div>
+  <h1>Tiger Bank</h1>
+  <p>Seu Banco Digital Completo</p>
+</div>
+
+<div class="card login-card">
+  <h2 class="login-title">🔐 Login</h2>
+  <form method="post" class="login-form">
     <div class="form-group">
       <label>E-mail</label>
-      <input type="email" name="email" required>
+      <input type="email" name="email" required placeholder="seu@email.com">
     </div>
-    <div class="form-group">
+
+    <div class="form-group password-group">
       <label>Senha</label>
-      <input type="password" name="password" required>
+      <input type="password" name="password" required placeholder="Digite sua senha">
+      <a href="{{ url_for('auth.esqueci_senha') }}" class="forgot-password-btn">Esqueci minha senha</a>
     </div>
+
     <button class="btn btn-primary" type="submit">ENTRAR</button>
-    <a class="btn btn-secondary" href="{{ url_for('auth.home') }}">VOLTAR</a>
+    <a class="btn btn-secondary btn-back" href="{{ url_for('auth.home') }}">VOLTAR</a>
   </form>
 </div>
 {% endblock %}
