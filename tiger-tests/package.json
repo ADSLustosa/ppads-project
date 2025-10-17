@@ -1,0 +1,17 @@
+{
+  "name": "tiger-tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:ui": "playwright test --reporter=line",
+    "test:ui:headed": "playwright test --headed",
+    "test:ui:workers": "playwright test --workers=4",
+    "trace:open": "playwright show-trace trace.zip"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.2",
+    "dotenv": "^16.4.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}

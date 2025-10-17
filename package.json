@@ -1,0 +1,23 @@
+{
+  "name": "ppads-project",
+  "version": "1.0.0",
+  "description": "* **Integrantes:**\r     * ALDEZON HENRIQUE SALVADOR SANTOS (RA: 10416147)\r     * CAIO FERNANDES (RA: 10423640)\r     * ISLAS MATHEUS COELHO AZEVEDO (RA: 10423586)\r     * JOAO PEDRO LIMA LUSTOSA AMORIM (RA: 10289920)\r     * WILLIAM MADEIRO DA SILVA (RA: 10423772)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ADSLustosa/ppads-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ADSLustosa/ppads-project/issues"
+  },
+  "homepage": "https://github.com/ADSLustosa/ppads-project#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.56.1"
+  }
+}
