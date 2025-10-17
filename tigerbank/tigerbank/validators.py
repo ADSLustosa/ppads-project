@@ -1,18 +1,24 @@
-
 from __future__ import annotations
 import re
 
-CPF_RE = re.compile(r"^\d{11}$")
+_DIGITS = re.compile(r"\D+")
 
-def is_valid_cpf(cpf: str) -> bool:
-    if not CPF_RE.match(cpf or ""):
-        return False
-    # validação simples de dígitos (placeholder); regra completa pode ser aplicada depois
+def normalize_digits(s: str) -> str:
+    """Remove tudo que não for número."""
+    return _DIGITS.sub("", s or "")
+
+def is_valid_cpf(_: str) -> bool:
+    """Aceita qualquer valor, sem bloqueio."""
     return True
 
 def strong_password(p: str) -> bool:
-    if len(p) < 8: return False
-    if not re.search(r"[A-Z]", p): return False
-    if not re.search(r"[a-z]", p): return False
-    if not re.search(r"\d", p): return False
+    """Valida senha forte: mínimo 8 caracteres, com maiúscula, minúscula e número."""
+    if len(p) < 8:
+        return False
+    if not re.search(r"[A-Z]", p):
+        return False
+    if not re.search(r"[a-z]", p):
+        return False
+    if not re.search(r"\d", p):
+        return False
     return True

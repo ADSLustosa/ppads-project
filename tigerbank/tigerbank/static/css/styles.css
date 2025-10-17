@@ -15,6 +15,11 @@ body{
     align-items:flex-start;
     overflow-x:hidden;
 }
+
+body:has(.logo) .header {
+    display: none;
+}
+
 .container{
     width:100%;
     max-width:900px;
@@ -31,6 +36,23 @@ body{
     font-size:80px;
 }
 
+.container-box {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
 .card{
     background:rgba(255,255,255,.05);
     backdrop-filter:blur(10px);
@@ -40,29 +62,30 @@ body{
     margin:20px auto;
 }
 
-
 .btn{
-    width:100%;
-    padding:15px;
-    border:none;
-    border-radius:10px;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:.3s;
-    margin-top:10px;
-    text-transform:uppercase;
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 
 .btn-primary{
-    background:linear-gradient(135deg,#e94560 0%,#ff6b81 100%);
+    background:linear-gradient(135deg,#4563e9 0%,#ff6b81 100%);
     color:white;
-}
+    }
+    
 
 
 .btn-success{
-    background:linear-gradient(135deg,#00d2d3 0%,#00a8a9 100%);
+    background:linear-gradient(135deg,#f16f18);
     color:white;
 }
 
@@ -78,7 +101,97 @@ body{
     color:white;
 }
 
-.header{display:flex;justify-content:space-between;
+/* --- Radios como "pill buttons" --- */
+.radio-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.radio-group label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    user-select: none;
+    transition: background .2s, border-color .2s, box-shadow .2s;
+}
+
+.radio-group label:hover {
+    background: rgba(255,255,255,.10);
+}
+
+.radio-group label:focus-within {
+    box-shadow: 0 0 0 3px rgba(0,210,211,.35);
+}
+
+/* esconde o radio nativo */
+.radio-group input[type="radio"] {
+    position:absolute;inset:0;
+    opacity:0;
+    margin:0;cursor:pointer;
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+
+}
+
+/* indicador visual */
+.radio-group label::before {
+    content:none !important;
+    display:none !important;
+}
+
+/* estado selecionado */
+.radio-group label:has(input[type="radio"]:checked){
+    background:linear-gradient(135deg,#00d2d3 0%,#00a8a9 100%);
+    border-color:transparent; color:#0b1220;
+}
+
+
+.radio-group label{
+    padding:12px 18px;
+    overflow:hidden;
+}
+
+/* --- Botão VOLTAR --- */
+button[type="submit"] + a.btn.btn-secondary{
+    display:block;
+    margin:18px auto 0 auto;         /* centralizado */                     /* mesma largura visual do ENTRAR */
+    text-align:center;
+    background:linear-gradient(135deg,#00d2d3 0%,#00a8a9 100%) !important;
+    color:#fff !important;
+    border:none !important;
+    box-shadow:0 6px 20px rgba(0,0,0,.35);
+    font-weight:bold;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+    border-radius:10px;
+    padding:14px 0;
+    transition:opacity .25s, transform .15s;
+}
+
+
+button[type="submit"] + a.btn.btn-secondary:hover{ 
+    opacity:.9;
+    transform:translateY(-2px);
+}
+
+
+button[type="submit"] + a.btn.btn-secondary:focus-visible{
+    outline:none;
+    box-shadow:0 0 0 3px rgba(0,210,211,.35);
+}
+
+
+.header{
+    display:flex;justify-content:space-between;
     align-items:center;
     background:rgba(255,255,255,.05);
     padding:20px;
@@ -90,6 +203,7 @@ body{
     margin-bottom:20px;
 }
 
+/* --- Texto dos formulários --- */
 .form-group label{
     display:block;
     margin-bottom:8px;
@@ -114,7 +228,7 @@ body{
 }
 
 .balance-card{
-    background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);
+    background:linear-gradient(135deg,#04f1ba 0%,#16213e 100%);
     border-radius:20px;
     padding:40px;
     margin:30px 0;
@@ -269,6 +383,69 @@ body{
 
 .transaction-item.negative{
     border-left-color:#e94560
+}
+
+.profile-card {
+  background-color: #1e1e2f;
+  padding: 20px;
+  border-radius: 15px;
+  color: #fff;
+  max-width: 600px;
+  margin: auto;
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.user-avatar {
+  background-color: #ff5c5c;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.user-info h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.user-info p {
+  margin: 0;
+  color: #aaa;
+}
+
+.user-data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.user-data-item {
+  background-color: #2a2a40;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-data-item label {
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 5px;
+}
+
+.user-data-item .value {
+  font-size: 16px;
+  font-weight: bold;
 }
 
 @media(max-width:768px){
