@@ -1,0 +1,14 @@
+
+{% extends 'base.html' %}
+{% block title %}Home - Tiger Bank{% endblock %}
+{% block content %}
+<div class="logo" style="margin-top:40px">
+  <div class="icon">🐯</div>
+  <h1>Tiger Bank</h1>
+  <p>Seu Banco Digital Completo</p>
+</div>
+<div class="card">
+  <a class="btn btn-primary" href="{{ url_for('auth.login') }}">ENTRAR</a>
+  <a class="btn btn-success" href="{{ url_for('auth.register') }}">CRIAR CONTA</a>
+</div>
+{% endblock %}

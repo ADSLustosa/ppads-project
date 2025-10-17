@@ -1,0 +1,20 @@
+
+{% extends 'base.html' %}
+{% block title %}Login - Tiger Bank{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>🔐 Login</h2>
+  <form method="post">
+    <div class="form-group">
+      <label>E-mail</label>
+      <input type="email" name="email" required>
+    </div>
+    <div class="form-group">
+      <label>Senha</label>
+      <input type="password" name="password" required>
+    </div>
+    <button class="btn btn-primary" type="submit">ENTRAR</button>
+    <a class="btn btn-secondary" href="{{ url_for('auth.home') }}">VOLTAR</a>
+  </form>
+</div>
+{% endblock %}

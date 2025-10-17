@@ -1,0 +1,31 @@
+
+{% extends 'base.html' %}
+{% block title %}Dashboard - Tiger Bank{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="welcome">Olá, {{ current_user.name.split(' ')[0] }}! 👋</div>
+  <div class="carousel-container">
+    <div class="carousel-slide slide1 active"><div><h3>🎉 Cashback de 5%</h3><p>Ganhe 5% de volta nas compras</p></div></div>
+    <div class="carousel-slide slide2"><div><h3>📈 Investimentos</h3><p>A partir de R$ 100</p></div></div>
+    <div class="carousel-slide slide3"><div><h3>⚡ PIX</h3><p>24/7 instantâneo</p></div></div>
+    <div class="carousel-dots"><div class="carousel-dot active"></div><div class="carousel-dot"></div><div class="carousel-dot"></div></div>
+  </div>
+
+  <div class="balance-card">
+    <div class="label">💰 Saldo Disponível</div>
+    <div class="amount">R$ {{ '%.2f'|format(account.balance|float) }}</div>
+    <div class="type">Conta {{ account.type }}</div>
+  </div>
+
+  <div class="action-buttons">
+    <a class="action-btn" href="{{ url_for('tx.deposito') }}"><div class="action-btn-icon">💵</div><div class="action-btn-text">Depositar</div></a>
+    <a class="action-btn green" href="{{ url_for('tx.saque') }}"><div class="action-btn-icon">💸</div><div class="action-btn-text">Sacar</div></a>
+    <a class="action-btn" href="{{ url_for('tx.transferencia') }}"><div class="action-btn-icon">🔄</div><div class="action-btn-text">Transferir</div></a>
+    <a class="action-btn green" href="{{ url_for('tx.pix') }}"><div class="action-btn-icon">⚡</div><div class="action-btn-text">PIX</div></a>
+    <a class="action-btn purple" href="{{ url_for('tx.emprestimo') }}"><div class="action-btn-icon">💰</div><div class="action-btn-text">Empréstimo</div></a>
+    <a class="action-btn purple" href="{{ url_for('tx.investimentos') }}"><div class="action-btn-icon">📈</div><div class="action-btn-text">Investir</div></a>
+    <a class="action-btn green" href="{{ url_for('tx.extrato') }}"><div class="action-btn-icon">📋</div><div class="action-btn-text">Extrato</div></a>
+    <a class="action-btn" href="{{ url_for('profile.view') }}"><div class="action-btn-icon">👤</div><div class="action-btn-text">Perfil</div></a>
+  </div>
+</div>
+{% endblock %}
