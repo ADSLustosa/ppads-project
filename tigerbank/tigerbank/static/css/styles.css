@@ -131,7 +131,7 @@ body:has(.logo) .header {
     box-shadow: 0 0 0 3px rgba(0,210,211,.35);
 }
 
-/* esconde o radio nativo */
+/* Esconde o radio nativo */
 .radio-group input[type="radio"] {
     position:absolute;inset:0;
     opacity:0;
@@ -519,3 +519,4 @@ button[type="submit"] + a.btn.btn-secondary:focus-visible{
     .action-buttons{grid-template-columns:repeat(2,1fr)}
     .action-btn-icon{font-size:36px}
 }
+/* Teste*/
