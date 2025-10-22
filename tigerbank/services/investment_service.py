@@ -1,41 +1,120 @@
-
 from __future__ import annotations
-from decimal import Decimal
+from decimal import Decimal, ROUND_DOWN
+from datetime import datetime
+from sqlalchemy import select
 from tigerbank.extensions import db
-from tigerbank.models import Account, Transaction, Investment
-from .account_service import _as_decimal, InsufficientFunds
+from tigerbank.models import Account, Investment, Transaction
 
-PRODUCTS = {
-    "poupanca": {"name": "Poupança", "rate": 0.005},
-    "cdb": {"name": "CDB", "rate": 0.01},
-    "acoes": {"name": "Ações", "rate": 0.02},  # simples
+# Produtos disponíveis e suas taxas mensais
+PRODUCTS: dict[str, Decimal] = {
+    "CDB": Decimal("0.012"),      # 1.2% a.m.
+    "LCI": Decimal("0.010"),      # 1.0% a.m.
+    "LCA": Decimal("0.011"),      # 1.1% a.m.
+    "POUPANCA": Decimal("0.005"), # 0.5% a.m.
 }
 
-def invest(account_id: int, product_key: str, principal: float, months: int) -> Investment:
-    if product_key not in PRODUCTS:
-        raise ValueError("produto invalido")
-    p = _as_decimal(principal)
-    if p < Decimal("100"):
-        raise ValueError("minimo 100")
-    with db.session.begin():
+class InsufficientFunds(Exception): ...
+class InvalidAmount(Exception): ...
+
+def _as_decimal(value: float | Decimal) -> Decimal:
+    """Converte valores para Decimal com duas casas decimais."""
+    d = Decimal(str(value)) if not isinstance(value, Decimal) else value
+    return d.quantize(Decimal("0.01"), rounding=ROUND_DOWN)
+
+def invest(account_id: int, product: str, amount: float, months: int) -> Investment:
+    """Realiza um investimento retirando saldo da conta."""
+    if product not in PRODUCTS:
+        raise ValueError("produto de investimento inválido")
+
+    if months <= 0:
+        raise ValueError("prazo inválido")
+
+    amt = _as_decimal(amount)
+    if amt <= 0:
+        raise InvalidAmount("valor inválido para investimento")
+
+    with db.session.begin_nested():
         acc = db.session.get(Account, account_id)
-        if _as_decimal(acc.balance) < p:
-            raise InsufficientFunds("saldo insuficiente")
-        acc.balance = _as_decimal(acc.balance) - p
-        prod = PRODUCTS[product_key]
-        inv = Investment(account_id=acc.id, product=prod["name"], monthly_rate=prod["rate"], principal=p, months=months, active=True)
+        if not acc:
+            raise ValueError("conta não encontrada")
+
+        if _as_decimal(acc.balance) < amt:
+            raise InsufficientFunds("saldo insuficiente para investir")
+
+        # Debita o valor da conta
+        acc.balance = _as_decimal(acc.balance) - amt
+
+        # Cria o investimento (usa campos definidos em models.py)
+        inv = Investment(
+            account_id=acc.id,
+            product=product,
+            monthly_rate=float(PRODUCTS[product]),
+            principal=amt,
+            months=months,
+            started_at=datetime.utcnow(),
+            active=True,
+        )
         db.session.add(inv)
-        db.session.add(Transaction(account_id=acc.id, kind="Investimento", amount=-p, description=f"Investimento em {prod['name']} - {months} meses", balance_after=acc.balance))
+
+        # Registra a transação no extrato
+        tx = Transaction(
+            account_id=acc.id,
+            kind="Investimento",
+            amount=-amt,
+            description=f"Investimento em {product}",
+            balance_after=acc.balance,
+        )
+        db.session.add(tx)
+
         return inv
 
-def redeem(account_id: int, investment_id: int):
-    with db.session.begin():
+def redeem(account_id: int, investment_id: int) -> Transaction:
+    """Resgata um investimento e credita o valor na conta."""
+    with db.session.begin_nested():
         inv = db.session.get(Investment, investment_id)
-        if inv.account_id != account_id or not inv.active:
-            raise ValueError("invalido")
-        total = inv.principal * Decimal(str((1+inv.monthly_rate) ** inv.months))
-        acc = inv.account
-        acc.balance = _as_decimal(acc.balance) + total
+        if not inv:
+            raise ValueError("investimento não encontrado")
+
+        if inv.account_id != account_id:
+            raise ValueError("investimento não pertence à conta informada")
+
+        if not inv.active:
+            raise ValueError("investimento já resgatado")
+
+        acc = db.session.get(Account, inv.account_id)
+        if not acc:
+            raise ValueError("conta não encontrada")
+
+        # Calcula rendimento simples (exemplo). Ajuste para composto se quiser.
+        principal = _as_decimal(inv.principal)
+        rate = _as_decimal(inv.monthly_rate)
+        months = int(inv.months) if inv.months else 0
+
+        total = _as_decimal(principal * (Decimal("1") + rate * Decimal(months)))
+
+        # Marca investimento como encerrado
         inv.active = False
-        db.session.add(Transaction(account_id=acc.id, kind="Resgate de Investimento", amount=total, description=f"Resgate {inv.product}", balance_after=acc.balance))
-        return total
+        try:
+            inv.ended_at = datetime.utcnow()
+        except Exception:
+            pass
+
+        # Credita o valor na conta
+        acc.balance = _as_decimal(acc.balance) + total
+
+        # Registra transação de crédito
+        tx = Transaction(
+            account_id=acc.id,
+            kind="Resgate",
+            amount=total,
+            description=f"Resgate de investimento {inv.product}",
+            balance_after=acc.balance,
+        )
+        db.session.add(tx)
+
+        return tx
+
+def list_investments(account_id: int) -> list[Investment]:
+    """Lista todos os investimentos de uma conta."""
+    stmt = select(Investment).where(Investment.account_id == account_id)
+    return db.session.scalars(stmt).all()
