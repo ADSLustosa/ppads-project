@@ -3,10 +3,53 @@
 {% block content %}
 <div class="card">
   <h2>⚡ PIX</h2>
-  <form method="post">
 
-<div class="form-group"><label>Chave PIX (e-mail)</label><input type="email" name="chave" required></div>
-<div class="form-group"><label>Valor</label><input type="number" step="0.01" min="0.01" name="valor" required></div>
+  <form id="form-pix" method="post">
+    <input type="hidden" name="chave" id="chave-hidden">
+    <input type="hidden" name="valor" id="valor-hidden">
+    <input type="hidden" name="agendado" id="agendado-hidden">
+    <input type="hidden" name="data_agendada" id="data-hidden">
+    <input type="hidden" name="data_agendada" id="data-hidden">
+    <input type="hidden" name="hora_agendada" id="hora-hidden">
+
+    <div class="form-group">
+      <label>Tipo de chave</label>
+      <div class="chip-group" id="tipo-chave">
+        <button type="button" class="chip active" data-type="email">E-mail</button>
+        <button type="button" class="chip" data-type="cpf_cnpj">CPF/CNPJ</button>
+        <button type="button" class="chip" data-type="celular">Celular</button>
+        <button type="button" class="chip" data-type="aleatoria">Chave aleatória</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label id="label-chave">Chave PIX</label>
+      <input class="input" id="input-chave" type="email" placeholder="nome@dominio.com" autocomplete="off" required>
+      <small class="help" id="hint-chave">Use o e-mail do destinatário</small>
+    </div>
+
+    <div class="form-group">
+      <label>Valor</label>
+      <input class="input" id="input-valor" inputmode="numeric" autocomplete="off" placeholder="R$ 0,00" value="R$ 0,00" required>
+      <small class="help">Informe o valor em reais</small>
+    </div>
+
+    <div class="form-group">
+      <label>Quando</label>
+      <div class="radio-group" id="quando">
+        <label class="radio"><input type="radio" name="quando" value="agora" checked>Imediato</label>
+        <label class="radio"><input type="radio" name="quando" value="agendado">Agendar</label>
+      </div>
+    </div>
+
+    <div class="form-group" id="grupo-data" style="display:none">
+      <label>Data e horário do agendamento</label>
+      <div class="row">
+        <input class="input" id="input-data" type="date" min="{{ today }}">
+        <input class="input" id="input-hora" type="time" step="60" value="09:00">
+      </div>
+      <small class="help">Se a data for hoje, o horário mínimo será ajustado automaticamente.</small>
+    </div>
 
     <button class="btn btn-success" type="submit">CONFIRMAR</button>
     <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>

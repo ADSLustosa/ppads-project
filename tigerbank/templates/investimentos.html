@@ -1,39 +1,89 @@
+{% extends "base.html" %}
 
-{% extends 'base.html' %}
-{% block title %}📈 Investimentos - Tiger Bank{% endblock %}
 {% block content %}
-<div class="card">
-  <h2>📈 Investimentos</h2>
-  <form method="post">
-    <div class="form-group">
-      <label>Produto</label>
-      <select name="produto" required>
-        {% for key, p in produtos.items() %}
-        <option value="{{ key }}">{{ p.name if p.name else p['name'] }} ({{ (p.rate if p.rate is defined else p['rate'])*100 }}%/m)</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div class="form-group"><label>Valor</label><input type="number" step="0.01" min="100" name="valor" required></div>
-    <div class="form-group"><label>Período (meses)</label>
-      <select name="meses" required><option>3</option><option>6</option><option>12</option><option>24</option></select>
-    </div>
-    <button class="btn btn-success" type="submit">INVESTIR</button>
-    <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
-  </form>
-</div>
-
-{% if investimentos %}
-  <div class="card">
-    <h2>💼 Seus Investimentos</h2>
-    {% for inv in investimentos if inv.active %}
-      <div class="investment-card">
-        <h3>{{ inv.product }}</h3>
-        <p>Principal: R$ {{ '%.2f'|format(inv.principal|float) }} | Prazo: {{ inv.months }} meses</p>
-        <form method="post" action="{{ url_for('tx.resgatar', inv_id=inv.id) }}">
-          <button class="btn btn-warning" type="submit">RESGATAR</button>
-        </form>
-      </div>
-    {% endfor %}
+<div class="page-container" style="padding:2rem;">
+  {% for category, msg in get_flashed_messages(with_categories=true) %}
+  <div class="alert alert-{{ 'danger' if category == 'error' else category }}" role="alert">
+    {{ msg }}
   </div>
-{% endif %}
+  {% endfor %}
+
+  <h2 style="margin-bottom:1.5rem;">Investimentos</h2>
+
+  <div class="card"
+    style="margin-bottom:1.5rem; border-radius:12px; padding:1.25rem; background:rgba(255,255,255,0.02);">
+    <div style="margin-bottom:0.75rem;">
+      <h5 style="margin:0 0 0.75rem 0; font-weight:700;">Novo Investimento</h5>
+
+      <form method="post" action="{{ url_for('tx.investimentos') }}">
+        <div style="margin-bottom:0.75rem;">
+          <label style="display:block; font-weight:600; margin-bottom:0.25rem;">Produto</label>
+          <select name="produto" required
+            style="width:100%; padding:14px 16px; border-radius:10px; background:linear-gradient(180deg, rgba(10,30,60,0.6), rgba(10,30,60,0.4)); color:#fff; border:1px solid rgba(255,255,255,0.03);">
+            {% for key, rate in produtos.items() %}
+            <option value="{{ key }}">{{ key }} — {{ (rate * 100)|round(2) }}% a.m.</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div style="margin-bottom:0.75rem;">
+          <label style="display:block; font-weight:600; margin-bottom:0.25rem;">Valor (R$)</label>
+          <input type="number" name="valor" step="0.01" min="0.01" required
+            style="width:100%; padding:14px 16px; border-radius:10px; background:linear-gradient(180deg, rgba(10,30,60,0.6), rgba(10,30,60,0.4)); color:#fff; border:1px solid rgba(255,255,255,0.03);" />
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label style="display:block; font-weight:600; margin-bottom:0.25rem;">Prazo (meses)</label>
+          <input type="number" name="meses" min="1" required
+            style="width:100%; padding:14px 16px; border-radius:10px; background:linear-gradient(180deg, rgba(10,30,60,0.6), rgba(10,30,60,0.4)); color:#fff; border:1px solid rgba(255,255,255,0.03);" />
+        </div>
+
+        <button type="submit" style="display:block; width:100%; padding:14px; font-size:1rem; color:#fff;
+                       border:0; border-radius:10px; margin-bottom:12px;
+                       background: linear-gradient(90deg,#ff8a00 0%, #ff5e3a 100%);
+                       box-shadow: 0 8px 20px rgba(255,94,58,0.18);">
+          INVESTIR
+        </button>
+
+        <a href="{{ url_for('dashboard.index') }}" style="display:block; text-align:center; text-decoration:none; width:100%; padding:14px; font-size:1rem; color:#fff;
+                  border:0; border-radius:10px;
+                  background: linear-gradient(90deg,#00d2c3 0%, #00b3ff 100%);
+                  box-shadow: 0 8px 20px rgba(0,179,255,0.12);">
+          VOLTAR
+        </a>
+      </form>
+    </div>
+  </div>
+
+  <div class="card" style="border-radius:12px; padding:1.25rem; background:rgba(255,255,255,0.02);">
+    <h5 style="margin:0 0 0.75rem 0; font-weight:700;">Meus Investimentos</h5>
+
+    {% if investimentos %}
+    <ul style="list-style:none; padding:0; margin:0;">
+      {% for inv in investimentos %}
+      <li
+        style="padding:.75rem 0; border-bottom:1px solid rgba(255,255,255,0.03); display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-weight:700;">{{ inv.product }}</div>
+          <div style="color:#bdbdbd; font-size:.95rem;">
+            R$ {{ '%.2f'|format(inv.principal) }} • {{ inv.months }} meses • {{ "Ativo" if inv.active else "Encerrado"
+            }}
+          </div>
+        </div>
+        {% if inv.active %}
+        <form method="post" action="{{ url_for('tx.resgatar', inv_id=inv.id) }}" style="margin:0;">
+          <button type="submit" style="padding:.5rem .9rem; border-radius:.6rem; border:0;
+                             background:#ffcfcd; color:#111; cursor:pointer;">
+            Resgatar
+          </button>
+        </form>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-muted" style="margin:0.5rem 0 0 0;">Nenhum investimento.</p>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
