@@ -1,13 +1,14 @@
 {
-    // Use o IntelliSense para saber mais sobre os atributos possíveis.
-    // Focalizar para exibir as descrições dos atributos existentes.
-    // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "jdk",
-            "request": "launch",
-            "name": "Launch Java App"
+        "name": "Flask (python -m flask)",
+        "type": "python",
+        "request": "launch",
+        "module": "flask",
+        "args": ["run"],
+        "envFile": "${workspaceFolder}/.env",
+        "jinja": true
         }
     ]
 }
