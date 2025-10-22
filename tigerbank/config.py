@@ -2,6 +2,8 @@
 from __future__ import annotations
 import os
 from pathlib import Path
+from tigerbank.config import * 
+
 
 BASE_DIR = Path(__file__).resolve().parent
 INSTANCE_DIR = BASE_DIR / "instance"

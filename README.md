@@ -3,13 +3,13 @@
 ## Nome do Porjeto: Tiger Bank
 
 ### Grupo: PROJETO DA DISCIPLINA 7
-* **Integrantes:**
-    * ALDEZON HENRIQUE SALVADOR SANTOS (RA: 10416147)
-    * CAIO FERNANDES (RA: 10423640)
-    * ISLAS MATHEUS COELHO AZEVEDO (RA: 10423586)
-    * JOAO PEDRO LIMA LUSTOSA AMORIM (RA: 10289920)
-    * WILLIAM MADEIRO DA SILVA (RA: 10423772)
 
+- **Integrantes:**
+  - ALDEZON HENRIQUE SALVADOR SANTOS (RA: 10416147)
+  - CAIO FERNANDES (RA: 10423640)
+  - ISLAS MATHEUS COELHO AZEVEDO (RA: 10423586)
+  - JOAO PEDRO LIMA LUSTOSA AMORIM (RA: 10289920)
+  - WILLIAM MADEIRO DA SILVA (RA: 10423772)
 
 ### Instruções para utilizar o app:
 
@@ -25,4 +25,3 @@
         2- Utilizar o Usuário Teste:
                 Email= teste@tigerbank.com
                 Senha: Testando1@
-
