@@ -1,4 +1,4 @@
-# run.ps1 - setup + run usando Python do VSCode/Path
+"# run.ps1 - setup + run usando Python do VSCode/Path
 $ErrorActionPreference = "Stop"
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $Here

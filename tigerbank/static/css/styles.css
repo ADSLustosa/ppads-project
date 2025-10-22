@@ -33,7 +33,8 @@ body:has(.logo) .header {
 }
 
 .logo .icon{
-    font-size:80px;
+    font-size:64px;
+    margin-bottom:10px;
 }
 
 .container-box {
