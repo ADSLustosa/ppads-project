@@ -13,9 +13,7 @@
   {% block header %}
   <nav>
     {% if current_user.is_authenticated %}
-    <form action="{{ url_for('auth.logout') }}" method="post" style="display:inline">
-      <button class="btn btn-warning" style="width:auto;padding:10px 20px">SAIR</button>
-    </form>
+
     {% endif %}
   </nav>
   {% endblock %}

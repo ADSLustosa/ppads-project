@@ -1,14 +1,14 @@
 from __future__ import annotations
+import re
 from datetime import date, datetime, time
 from decimal import Decimal
-import re
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from tigerbank.models import User, Transaction
 from tigerbank.services import account_service, transfer_service
+from tigerbank.services.transfer_service import transfer as do_transfer
 from tigerbank.services.investment_service import invest, redeem, PRODUCTS
 from tigerbank.services.loan_service import hire_loan
-from tigerbank.services.transfer_service import transfer as do_transfer
 
 bp = Blueprint("tx", __name__, url_prefix="/tx")
 
@@ -66,31 +66,21 @@ def transferencia():
     return render_template("transferencia.html")
 
 # -------- PIX
-def _only_digits(s: str) -> str:
-    return re.sub(r"\D+", "", s or "")
-
-def _detect_key_type(raw: str) -> str:
-    s = (raw or "").strip().lower()
-    if "@" in s: return "email"
-    d = _only_digits(s)
-    if len(d) in (11, 14): return "cpf_cnpj"
-    if len(d) in (10, 11): return "celular"
-    return "aleatoria"
+_only_digits = lambda s: re.sub(r"\D+", "", s or "")
 
 def _find_user_by_key(raw: str) -> User | None:
-    k = _detect_key_type(raw)
-    if k == "email":
-        return User.query.filter_by(email=raw.strip().lower()).first()
-    if k == "cpf_cnpj":
-        doc = _only_digits(raw)
-        u = User.query.filter_by(cpf=doc).first()
+    s = (raw or "").strip().lower()
+    if "@" in s:
+        return User.query.filter_by(email=s).first()
+    d = _only_digits(s)
+    if len(d) in (11, 14):
+        u = User.query.filter_by(cpf=d).first()
         if u: return u
-        if hasattr(User, "cnpj"):
-            return User.query.filter_by(cnpj=doc).first()
-        return None
-    if k == "celular" and hasattr(User, "phone"):
-        return User.query.filter_by(phone=_only_digits(raw)).first()
-    return None
+        return getattr(User.query.filter_by, "cnpj", lambda **k: None)(cnpj=d) if hasattr(User, "cnpj") else None
+    if len(d) in (10, 11) and hasattr(User, "phone"):
+        return User.query.filter_by(phone=d).first()
+    return None  
+
 
 @bp.route("/pix", methods=["GET", "POST"], endpoint="pix")
 @login_required
@@ -104,6 +94,7 @@ def pix():
     data_agendada = request.form.get("data_agendada") or ""
     hora_agendada = request.form.get("hora_agendada") or "09:00"
 
+    # --- validação de valor ---
     try:
         valor = Decimal(valor_str)
     except Exception:
@@ -113,21 +104,31 @@ def pix():
         flash("Valor deve ser maior que zero.", "error")
         return redirect(url_for("tx.pix"))
 
+    # --- se for agendado ---
     if agendado:
         try:
             dt = date.fromisoformat(data_agendada)
             hh, mm = (hora_agendada or "09:00").split(":")
             tm = time(int(hh), int(mm))
             when = datetime.combine(dt, tm)
-        except Exception:
-            flash("Data/horário do agendamento inválidos.", "error")
-            return redirect(url_for("tx.pix"))
-    if when < datetime.now():
-        flash("Agendamento não pode ser no passado.", "error")
-        return redirect(url_for("tx.pix"))
-    flash(f"Agendamento registrado para {when.strftime('%d/%m/%Y %H:%M')}. Execução automática não implementada.", "success")
-    return redirect(url_for("dashboard.index"))
 
+            # validação da data/hora
+            if when < datetime.now():
+                flash("Agendamento não pode ser no passado.", "error")
+                return redirect(url_for("tx.pix"))
+
+            flash(
+                f"Agendamento registrado para {when.strftime('%d/%m/%Y %H:%M')}. "
+                "Execução automática não implementada.",
+                "success",
+            )
+            return redirect(url_for("dashboard.index"))
+
+        except Exception:
+            flash("Data ou horário inválidos.", "error")
+            return redirect(url_for("tx.pix"))
+
+    # --- PIX imediato ---
     dest = _find_user_by_key(chave)
     if not dest:
         flash("Chave PIX não encontrada ou não suportada.", "error")
@@ -138,10 +139,10 @@ def pix():
 
     try:
         do_transfer(current_user.account.id, dest.account.id, float(valor), "PIX")
-        flash("PIX enviado.", "success")
+        flash("PIX enviado com sucesso.", "success")
         return redirect(url_for("dashboard.index"))
     except Exception as e:
-        flash(str(e), "error")
+        flash(f"Erro ao processar PIX: {e}", "error")
         return redirect(url_for("tx.pix"))
 
 # -------- Extrato e Investimentos (inalterados)

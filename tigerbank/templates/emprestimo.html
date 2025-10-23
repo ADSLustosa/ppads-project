@@ -1,8 +1,29 @@
 {% extends 'base.html' %}
+
+{% block header %}
+<h1>
+  <video class="icon-video"
+        src="{{ url_for('static', filename='img/tigre1.mp4') }}"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="auto">
+  </video>
+  Empréstimo
+</h1>
+<nav>
+  {% if current_user.is_authenticated %}
+  <form action="{{ url_for('auth.logout') }}" method="post" style="display:inline">
+    <a class="btn btn-secondary" href="{{ url_for('auth.home') }}">VOLTAR</a>
+  </form>
+  {% endif %}
+</nav>
+{% endblock %}
+
 {% block title %}💰 Empréstimo - Tiger Bank{% endblock %}
 {% block content %}
 <div class="card">
-  <h2>💰 Empréstimo</h2>
   <form method="post">
 
     <div class="form-group"><label>Valor</label><input type="number" step="100" min="500" max="50000" name="valor"
@@ -10,7 +31,7 @@
     <div class="form-group"><label>Parcelas</label>
       <select name="meses" required>
         <option value="">Selecione</option>
-        <option>6</option>
+        <option>06</option>
         <option>12</option>
         <option>18</option>
         <option>24</option>
@@ -18,7 +39,6 @@
     </div>
 
     <button class="btn btn-success" type="submit">CONFIRMAR</button>
-    <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
   </form>
 </div>
 {% endblock %}

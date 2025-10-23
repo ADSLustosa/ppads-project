@@ -1,16 +1,37 @@
 {% extends 'base.html' %}
-{% block title %}⚡ PIX - Tiger Bank{% endblock %}
+
+{% block header %}
+<h1>
+  <video class="icon-video"
+        src="{{ url_for('static', filename='img/tigre1.mp4') }}"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="auto">
+  </video>
+  PIX
+</h1>
+<nav>
+  {% if current_user.is_authenticated %}
+  <form action="{{ url_for('auth.logout') }}" method="post" style="display:inline">
+    <a class="btn btn-secondary" href="{{ url_for('auth.home') }}">VOLTAR</a>
+  </form>
+  {% endif %}
+</nav>
+{% endblock %}
+
+
+
 {% block content %}
 <div class="card">
-  <h2>⚡ PIX</h2>
 
-  <form id="form-pix" method="post">
-    <input type="hidden" name="chave" id="chave-hidden">
-    <input type="hidden" name="valor" id="valor-hidden">
-    <input type="hidden" name="agendado" id="agendado-hidden">
-    <input type="hidden" name="data_agendada" id="data-hidden">
-    <input type="hidden" name="data_agendada" id="data-hidden">
-    <input type="hidden" name="hora_agendada" id="hora-hidden">
+<form id="form-pix" method="post" action="{{ url_for('tx.pix') }}">
+  <input type="hidden" name="chave" id="chave-hidden">
+  <input type="hidden" name="valor" id="valor-hidden">
+  <input type="hidden" name="agendado" id="agendado-hidden">
+  <input type="hidden" name="data_agendada" id="data-hidden">
+  <input type="hidden" name="hora_agendada" id="hora-hidden">
 
     <div class="form-group">
       <label>Tipo de chave</label>
@@ -35,7 +56,7 @@
     </div>
 
     <div class="form-group">
-      <label>Quando</label>
+      <label>Quando efetuar a transação</label>
       <div class="radio-group" id="quando">
         <label class="radio"><input type="radio" name="quando" value="agora" checked>Imediato</label>
         <label class="radio"><input type="radio" name="quando" value="agendado">Agendar</label>
@@ -52,7 +73,6 @@
     </div>
 
     <button class="btn btn-success" type="submit">CONFIRMAR</button>
-    <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
   </form>
 </div>
 {% endblock %}

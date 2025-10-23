@@ -1,5 +1,26 @@
 {% extends "base.html" %}
 
+{% block header %}
+<h1>
+  <video class="icon-video"
+        src="{{ url_for('static', filename='img/tigre1.mp4') }}"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="auto">
+  </video>
+  Investimentos
+</h1>
+<nav>
+  {% if current_user.is_authenticated %}
+  <form action="{{ url_for('auth.logout') }}" method="post" style="display:inline">
+    <a class="btn btn-secondary" href="{{ url_for('auth.home') }}">VOLTAR</a>
+  </form>
+  {% endif %}
+</nav>
+{% endblock %}
+
 {% block content %}
 <div class="page-container" style="padding:2rem;">
   {% for category, msg in get_flashed_messages(with_categories=true) %}
@@ -8,23 +29,21 @@
   </div>
   {% endfor %}
 
-  <h2 style="margin-bottom:1.5rem;">Investimentos</h2>
-
   <div class="card"
     style="margin-bottom:1.5rem; border-radius:12px; padding:1.25rem; background:rgba(255,255,255,0.02);">
     <div style="margin-bottom:0.75rem;">
-      <h5 style="margin:0 0 0.75rem 0; font-weight:700;">Novo Investimento</h5>
+      <h5 style="margin:0 0 0.75rem 0; font-size: 1.5rem;">Novo Investimento</h5>
 
       <form method="post" action="{{ url_for('tx.investimentos') }}">
-        <div style="margin-bottom:0.75rem;">
-          <label style="display:block; font-weight:600; margin-bottom:0.25rem;">Produto</label>
-          <select name="produto" required
-            style="width:100%; padding:14px 16px; border-radius:10px; background:linear-gradient(180deg, rgba(10,30,60,0.6), rgba(10,30,60,0.4)); color:#fff; border:1px solid rgba(255,255,255,0.03);">
-            {% for key, rate in produtos.items() %}
-            <option value="{{ key }}">{{ key }} — {{ (rate * 100)|round(2) }}% a.m.</option>
-            {% endfor %}
-          </select>
-        </div>
+  <div class="form-group">
+    <label>Produto</label>
+    <select name="produto" required>
+      <option value="">Selecione</option>
+      {% for key, rate in produtos.items() %}
+        <option value="{{ key }}">{{ key }} — {{ (rate * 100)|round(2) }}% a.m.</option>
+      {% endfor %}
+    </select>
+  </div>
 
         <div style="margin-bottom:0.75rem;">
           <label style="display:block; font-weight:600; margin-bottom:0.25rem;">Valor (R$)</label>
@@ -39,9 +58,9 @@
         </div>
 
         <button type="submit" style="display:block; width:100%; padding:14px; font-size:1rem; color:#fff;
-                       border:0; border-radius:10px; margin-bottom:12px;
-                       background: linear-gradient(90deg,#ff8a00 0%, #ff5e3a 100%);
-                       box-shadow: 0 8px 20px rgba(255,94,58,0.18);">
+          border:0; border-radius:10px; margin-bottom:12px;
+          background: linear-gradient(90deg,#ff8a00 0%, #ff5e3a 100%);
+          box-shadow: 0 8px 20px rgba(255,94,58,0.18);">
           INVESTIR
         </button>
 
@@ -73,7 +92,7 @@
         {% if inv.active %}
         <form method="post" action="{{ url_for('tx.resgatar', inv_id=inv.id) }}" style="margin:0;">
           <button type="submit" style="padding:.5rem .9rem; border-radius:.6rem; border:0;
-                             background:#ffcfcd; color:#111; cursor:pointer;">
+              background:#ffcfcd; color:#111; cursor:pointer;">
             Resgatar
           </button>
         </form>

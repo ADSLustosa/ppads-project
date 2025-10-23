@@ -1,8 +1,26 @@
 {% extends 'base.html' %}
-{% block title %}Criar Conta - Tiger Bank{% endblock %}
+
+{% block header %}
+<h1>
+  <video class="icon-video"
+        src="{{ url_for('static', filename='img/tigre1.mp4') }}"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="auto">
+  </video>
+  Criar conta
+</h1>
+<nav>
+  <form action="{{ url_for('auth.logout') }}" method="post" style="display:inline">
+    <a class="btn btn-secondary" href="{{ url_for('auth.home') }}">VOLTAR</a>
+  </form>
+</nav>
+{% endblock %}
+
 {% block content %}
 <div class="card">
-  <h2>📝 Criar Conta</h2>
   <form method="post">
     <div class="form-group">
       <label>Tipo de Pessoa</label>

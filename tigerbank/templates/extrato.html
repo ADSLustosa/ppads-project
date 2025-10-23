@@ -1,19 +1,30 @@
 
 {% extends 'base.html' %}
 {% block header %}
-<h1>Extrato</h1>
+<h1>
+  <video class="icon-video"
+        src="{{ url_for('static', filename='img/tigre1.mp4') }}"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="auto">
+  </video>
+  Extrato
+</h1>
 <nav>
-    {% if current_user.is_authenticated %}
-    <form action="{{ url_for('auth.logout') }}" method="post" style="display:inline">
-        <a class="btn btn-secondary" href="{{ url_for('auth.home') }}">VOLTAR</a>
-    </form>
-    {% endif %}
+  {% if current_user.is_authenticated %}
+  <form action="{{ url_for('auth.logout') }}" method="post" style="display:inline">
+    <a class="btn btn-secondary" href="{{ url_for('auth.home') }}">VOLTAR</a>
+  </form>
+  {% endif %}
 </nav>
 {% endblock %}
-{% block title %}📋 Extrato - Tiger Bank{% endblock %}
+
+
+
 {% block content %}
 <div class="card">
-  <h2>📋 Extrato</h2>
   <div class="extrato-list">
     {% if not txs %}
       <p class="info-text">Nenhuma transação.</p>
