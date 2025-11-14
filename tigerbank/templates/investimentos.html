@@ -1,39 +1,93 @@
-
 {% extends 'base.html' %}
 {% block title %}📈 Investimentos - Tiger Bank{% endblock %}
+
+{% block header %}
+<div class="profile-header">
+    <img class="perfil-icon" src="{{ url_for('static', filename='img/tigre.png') }}">
+    <h1>Investimentos</h1>
+    <nav>
+        <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
+    </nav>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="card">
-  <h2>📈 Investimentos</h2>
-  <form method="post">
-    <div class="form-group">
-      <label>Produto</label>
-      <select name="produto" required>
-        {% for key, p in produtos.items() %}
-        <option value="{{ key }}">{{ p.name if p.name else p['name'] }} ({{ (p.rate if p.rate is defined else p['rate'])*100 }}%/m)</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div class="form-group"><label>Valor</label><input type="number" step="0.01" min="100" name="valor" required></div>
-    <div class="form-group"><label>Período (meses)</label>
-      <select name="meses" required><option>3</option><option>6</option><option>12</option><option>24</option></select>
-    </div>
-    <button class="btn btn-success" type="submit">INVESTIR</button>
-    <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
-  </form>
+
+<!-- ========================= NOVA APLICAÇÃO ========================= -->
+<div class="card investment-form-card">
+    <h2 class="card-title"><span>📊</span> Nova Aplicação</h2>
+
+    <form method="post">
+
+        <!-- Produto -->
+        <div class="form-group">
+            <label>Produto</label>
+            <div class="select-wrapper">
+                <select name="produto" required>
+                    {% for key, p in produtos.items() %}
+                        {% set nome = p.name if p.name else p['name'] %}
+                        {% set taxa = p.rate if p.rate else p['rate'] %}
+                        <option value="{{ key }}">{{ nome }} ({{ (taxa * 100) | round(2) }}% / mês)</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Valor -->
+        <div class="form-group">
+            <label>Valor</label>
+            <div class="input-wrapper"><span class="input-icon">💵</span><input type="text" name="valor" class="money-input"></div>
+        </div>
+
+        <!-- Período -->
+        <div class="form-group">
+            <label>Período (meses)</label>
+            <div class="select-wrapper">
+                <select name="meses" required>
+                    <option value="3">3 meses</option>
+                    <option value="6">6 meses</option>
+                    <option value="12">12 meses</option>
+                    <option value="24">24 meses</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn btn-success" type="submit">INVESTIR</button>
+    </form>
 </div>
 
+
+<!-- ========================= SEUS INVESTIMENTOS ========================= -->
 {% if investimentos %}
-  <div class="card">
-    <h2>💼 Seus Investimentos</h2>
-    {% for inv in investimentos if inv.active %}
-      <div class="investment-card">
-        <h3>{{ inv.product }}</h3>
-        <p>Principal: R$ {{ '%.2f'|format(inv.principal|float) }} | Prazo: {{ inv.months }} meses</p>
-        <form method="post" action="{{ url_for('tx.resgatar', inv_id=inv.id) }}">
-          <button class="btn btn-warning" type="submit">RESGATAR</button>
-        </form>
-      </div>
-    {% endfor %}
-  </div>
+<div class="card investment-list-card">
+    <h2 class="card-title"><span>💼</span> Seus Investimentos</h2>
+
+    {% set ativos = investimentos | selectattr('active') | list %}
+    
+    {% if ativos %}
+        {% for inv in ativos %}
+            <div class="investment-item">
+
+                <div class="investment-info">
+                    <h3 class="inv-title">{{ inv.product }}</h3>
+                    <p class="inv-details">
+                        Principal:
+                        <strong>R$ {{ '%.2f' | format(inv.principal | float) }}</strong>
+                        &nbsp;•&nbsp;
+                        Prazo: <strong>{{ inv.months }} meses </strong>
+                    </p>
+                </div>
+
+                <form method="post" action="{{ url_for('tx.resgatar', inv_id=inv.id) }}">
+                    <button class="resgatar-btn" type="submit">RESGATAR</button>
+                </form>
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty-state">Você ainda não possui investimentos ativos.</p>
+    {% endif %}
+</div>
 {% endif %}
+
 {% endblock %}
