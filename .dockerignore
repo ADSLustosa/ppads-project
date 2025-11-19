@@ -5,7 +5,8 @@
 # Virtualenv
 venv
 .venv
-*/__pycache__/
+*/.venv/
+*/venv/
 __pycache__/
 
 # Node
