@@ -12,6 +12,9 @@ def create_app() -> Flask:
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "change-this-in-dev")
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///tigerbank.db")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+
 
     # Extensões
     db.init_app(app)
@@ -58,5 +61,14 @@ def create_app() -> Flask:
             return app.send_static_file("favicon.ico")
         except Exception:
             return Response(status=204)
+        
+    # --- Registro do filtro CPF ---
+    @app.template_filter("cpf")
+    def format_cpf(value: str):
+        digits = ''.join(filter(str.isdigit, value or ""))
+        if len(digits) != 11:
+            return value
+        return f"{digits[0:3]}.{digits[3:6]}.{digits[6:9]}-{digits[9:11]}"
+
 
     return app
