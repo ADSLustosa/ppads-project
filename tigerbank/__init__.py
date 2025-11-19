@@ -4,6 +4,10 @@ import os
 from flask import Flask, Response, render_template
 from tigerbank.extensions import db, login_manager
 from tigerbank.models import User
+from flask_sqlalchemy import SQLAlchemy
+from config import Config
+
+db = SQLAlchemy()
 
 def create_app() -> Flask:
     app = Flask(__name__, template_folder="templates", static_folder="static")
@@ -18,6 +22,7 @@ def create_app() -> Flask:
 
     # Extensões
     db.init_app(app)
+    app.config.from_object(Config)
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
     login_manager.login_message_category = "info"
