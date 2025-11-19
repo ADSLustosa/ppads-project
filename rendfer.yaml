@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: tigerbank
+    env: docker
+    region: oregon
+    plan: free
+    autoDeploy: true
+
+    envVars:
+      - key: FLASK_ENV
+        value: production
+
+      - key: SECRET_KEY
+        sync: false
+
+      - key: DATABASE_URL
+        sync: false
