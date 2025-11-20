@@ -2,10 +2,10 @@
 from __future__ import annotations
 import os
 from flask import Flask, Response, render_template
-from tigerbank.extensions import db, login_manager
-from tigerbank.models import User
+from .extensions import db, login_manager
+from .models import User
 from flask_sqlalchemy import SQLAlchemy
-from config import Config
+from .config import Config
 
 db = SQLAlchemy()
 

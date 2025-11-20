@@ -1,6 +1,6 @@
 
 from app import create_app
-from config import TestConfig
+from tigerbank.config import TestConfig
 
 def test_health():
     app = create_app(TestConfig)
