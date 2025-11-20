@@ -2,7 +2,7 @@
 from __future__ import annotations
 import os
 from flask import Flask, Response, render_template
-from .extensions import db, login_manager
+from .extensions import db, migrate, login_manager
 from .models import User
 from tigerbank.config import Config
 
@@ -14,6 +14,7 @@ def create_app() -> Flask:
 
     # 2️⃣ Só depois inicializa extensões
     db.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
     login_manager.login_message_category = "info"
