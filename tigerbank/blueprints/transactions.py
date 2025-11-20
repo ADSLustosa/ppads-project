@@ -1,10 +1,9 @@
+# tigerbank/blueprints/transactions.py
 from __future__ import annotations
 import secrets
 from decimal import Decimal
-
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import current_user
-
 from tigerbank.extensions import db
 from tigerbank.models import User, Account, Transaction, Investment
 from tigerbank.security import hash_password
@@ -13,27 +12,19 @@ bp = Blueprint("tx", __name__, url_prefix="/tx")
 
 
 # ============================================================
-# CONVERSÃO E FUNÇÕES DE BASE FINANCEIRA
+# UTILITÁRIOS FINANCEIROS / CONVERSÃO
 # ============================================================
 
 def _q(v) -> Decimal:
-    """Converte qualquer valor em Decimal com 2 casas."""
-    try:
-        return Decimal(str(v)).quantize(Decimal("0.01"))
-    except Exception:
-        return Decimal("0.00")
+    """Converte para Decimal com 2 casas."""
+    return Decimal(str(v)).quantize(Decimal("0.01"))
 
 
 def _to_float(s: str) -> float:
-    """Converte R$ 1.234,56 → 1234.56."""
+    """Converte valores formatados como R$ para float."""
     if not s:
         return 0.0
-    s = (
-        s.replace("R$", "")
-         .replace(" ", "")
-         .replace(".", "")
-         .replace(",", ".")
-    )
+    s = s.replace("R$", "").replace(" ", "").replace(".", "").replace(",", ".")
     try:
         return float(Decimal(s))
     except Exception:
@@ -48,74 +39,57 @@ def _rollback():
 
 
 # ============================================================
-# GARANTIA DE CONTAS E DESTINATÁRIOS
+# CONTAS E USUÁRIOS
 # ============================================================
 
 def _ensure_account() -> Account:
-    """Garante que o usuário tenha conta. Se não tiver, cria uma conta de teste."""
-    if getattr(current_user, "is_authenticated", False):
-        acc = getattr(current_user, "account", None)
-        if acc:
-            return acc
+    """Garante que o usuário autenticado tenha uma conta."""
+    if getattr(current_user, "is_authenticated", False) and getattr(current_user, "account", None):
+        return current_user.account
 
-    # Conta automática (ambiente de teste)
-    user = User.query.filter_by(email="teste@tigerbank.com").first()
-    if not user:
-        user = User(
-            cpf="1" * 11,
+    # Conta automática de teste
+    u = User.query.filter_by(email="teste@tigerbank.com").first()
+    if not u:
+        u = User(
+            cpf="1"*11,
             name="Conta Teste",
             email="teste@tigerbank.com",
             password_hash=hash_password("Teste123@")
         )
-        db.session.add(user)
+        db.session.add(u)
         db.session.flush()
-        acc = Account(user_id=user.id, type="Corrente", balance=_q(0))
-        db.session.add(acc)
+        db.session.add(Account(user_id=u.id, type="Corrente", balance=_q(0)))
         db.session.commit()
-        return acc
-
-    return user.account  # type: ignore
+    return u.account  # type: ignore
 
 
 def _ensure_recipient(orig: Account) -> Account:
-    """Garante um destinatário válido para transferências/PIX."""
+    """Garante que sempre exista um destinatário válido."""
     other = Account.query.filter(Account.id != orig.id).first()
     if other:
         return other
 
-    # Criação automática
-    user = User(
-        cpf="9" * 11,
+    u = User(
+        cpf="9"*11,
         name="Destinatário Automático",
         email=f"auto-{secrets.token_hex(3)}@local.test",
         password_hash=hash_password("Teste123@"),
     )
-    db.session.add(user)
+    db.session.add(u)
     db.session.flush()
 
-    acc = Account(user_id=user.id, type="Corrente", balance=_q(0))
+    acc = Account(user_id=u.id, type="Corrente", balance=_q(0))
     db.session.add(acc)
     db.session.commit()
     return acc
 
 
 # ============================================================
-# OPERAÇÕES BANCÁRIAS – Centralização
+# CENTRALIZAÇÃO DE OPERAÇÕES FINANCEIRAS (PADRÃO BANCÁRIO)
 # ============================================================
 
-def _post_tx(acc_id: int, kind: str, amount: Decimal, desc: str, new_balance: Decimal):
-    """Registra qualquer transação."""
-    db.session.add(Transaction(
-        account_id=acc_id,
-        kind=kind,
-        amount=_q(amount),
-        description=desc,
-        balance_after=_q(new_balance)
-    ))
-
-
 def _debit(acc: Account, valor: Decimal, desc: str, kind: str):
-    """Debita valor com validação anti saldo-negativo."""
+    """Debita valor da conta com proteção 100% anti-saldo-negativo."""
     valor = _q(valor)
 
     if valor <= 0:
@@ -129,8 +103,9 @@ def _debit(acc: Account, valor: Decimal, desc: str, kind: str):
 
 
 def _credit(acc: Account, valor: Decimal, desc: str, kind: str):
-    """Credita valor com validação mínima."""
+    """Credita valor na conta com validação."""
     valor = _q(valor)
+
     if valor <= 0:
         raise ValueError("Valor inválido.")
 
@@ -138,8 +113,19 @@ def _credit(acc: Account, valor: Decimal, desc: str, kind: str):
     _post_tx(acc.id, kind, valor, desc, acc.balance)
 
 
+def _post_tx(acc_id: int, kind: str, amount: Decimal, desc: str, new_balance: Decimal):
+    """Registra transação no extrato."""
+    db.session.add(Transaction(
+        account_id=acc_id,
+        kind=kind,
+        amount=amount,
+        description=desc,
+        balance_after=new_balance
+    ))
+
+
 # ============================================================
-# PRODUTOS DE INVESTIMENTO
+# PRODUTOS DE INVESTIMENTO (SIMULAÇÃO)
 # ============================================================
 
 def _investment_products() -> dict:
@@ -202,13 +188,13 @@ def saque():
 def transferencia():
     if request.method == "POST":
         origem = _ensure_account()
-        destino = _ensure_recipient(origem)
+        dest = _ensure_recipient(origem)
         valor = _q(_to_float(request.form.get("valor", "")))
 
         try:
             _rollback()
             _debit(origem, valor, "Transferência", "Transferência Enviada")
-            _credit(destino, valor, "Transferência", "Transferência Recebida")
+            _credit(dest, valor, "Transferência", "Transferência Recebida")
             db.session.commit()
             flash("Transferência concluída.", "success")
         except ValueError as e:
@@ -224,13 +210,13 @@ def transferencia():
 def pix():
     if request.method == "POST":
         origem = _ensure_account()
-        destino = _ensure_recipient(origem)
+        dest = _ensure_recipient(origem)
         valor = _q(_to_float(request.form.get("valor", "")))
 
         try:
             _rollback()
             _debit(origem, valor, "PIX", "PIX Enviado")
-            _credit(destino, valor, "PIX", "PIX Recebido")
+            _credit(dest, valor, "PIX", "PIX Recebido")
             db.session.commit()
             flash("PIX enviado com sucesso.", "success")
         except ValueError as e:
@@ -260,6 +246,8 @@ def extrato():
 def investimentos():
     acc = _ensure_account()
     produtos = _investment_products()
+
+    # 🔥 Agora puxa investimentos reais
     investimentos = Investment.query.filter_by(account_id=acc.id).all()
 
     if request.method == "POST":
@@ -267,33 +255,35 @@ def investimentos():
         produto_key = request.form.get("produto")
         meses = int(request.form.get("meses", "0"))
 
-        produto = produtos.get(produto_key)
-        if not produto:
+        produto_escolhido = produtos.get(produto_key)
+        if not produto_escolhido:
             flash("Produto inválido!", "error")
             return redirect(url_for("tx.investimentos"))
 
+        # 🔥 Evita saldo negativo
         if acc.balance < valor:
             flash("Saldo insuficiente!", "error")
             return redirect(url_for("tx.investimentos"))
 
         _rollback()
 
-        # Debita do saldo
+        # Atualiza saldo
         acc.balance = _q(acc.balance) - valor
 
-        # Transação normal
+        # Registra transação
         _post_tx(
             acc.id,
             "Investimento",
             -valor,
-            f"{produto['name']} ({meses}m)",
+            f"{produto_escolhido['name']} ({meses}m)",
             acc.balance
         )
 
+        # 🔥 Salva o investimento usando os CAMPOS EXATOS do seu model
         novo = Investment(
             account_id=acc.id,
-            product=produto["name"],
-            monthly_rate=float(produto["rate"]),
+            product=produto_escolhido["name"],
+            monthly_rate=float(produto_escolhido["rate"]),
             principal=float(valor),
             months=meses,
             active=True
@@ -312,6 +302,7 @@ def investimentos():
     )
 
 
+
 # ---------------------- RESGATE ------------------------------
 @bp.post("/investimentos/<int:inv_id>/resgatar")
 def resgatar(inv_id: int):
@@ -328,7 +319,9 @@ def resgatar(inv_id: int):
 
     _rollback()
 
+    # 🔥 Calcula resgate simples (sem juros por enquanto)
     valor = _q(inv.principal)
+
     acc.balance = _q(acc.balance) + valor
     inv.active = False
 
@@ -344,18 +337,17 @@ def resgatar(inv_id: int):
     flash("Resgate efetuado com sucesso!", "success")
     return redirect(url_for("tx.investimentos"))
 
-
 # ---------------------- EMPRÉSTIMO ---------------------------
 @bp.route("/emprestimo", methods=["GET", "POST"])
 def emprestimo():
     if request.method == "POST":
         acc = _ensure_account()
         valor = _q(_to_float(request.form.get("valor", "")))
-        meses = request.form.get("meses", "0")
+        parcelas = request.form.get("meses", "0")
 
         try:
             _rollback()
-            _credit(acc, valor, f"Empréstimo aprovado ({meses}x)", "Empréstimo")
+            _credit(acc, valor, f"Empréstimo aprovado ({parcelas}x)", "Empréstimo")
             db.session.commit()
             flash("Empréstimo aprovado com sucesso.", "success")
         except ValueError as e:

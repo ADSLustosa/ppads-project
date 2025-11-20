@@ -1,123 +1,66 @@
 {% extends 'base.html' %}
-{% block title %}🔄 Transferência - Tiger Bank{% endblock %}
+{% block title %}🔄 Transferir - Tiger Bank{% endblock %}
 
 {% block header %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-    <div class="container d-flex justify-content-between align-items-center">
+<div class="profile-header">
 
-        <div class="d-flex align-items-center gap-2">
-            <img src="{{ url_for('static', filename='img/tigre.png') }}"
-                 width="40" height="40" class="rounded-circle">
-            <h5 class="m-0 text-white fw-semibold">Transferência</h5>
-        </div>
+    <!-- Ícone -->
+    <img class="perfil-icon" src="{{ url_for('static', filename='img/tigre.png') }}" alt="Ícone do Tigre">
 
-        <a class="btn btn-light fw-semibold px-3"
-           href="{{ url_for('dashboard.index') }}">
-            Voltar
-        </a>
-    </div>
-</nav>
+    <!-- Título -->
+    <h1>Transferência</h1>
+
+    <!-- Botão voltar no canto direito -->
+    <nav>
+        <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
+    </nav>
+
+</div>
 {% endblock %}
+
 
 {% block content %}
 
-<div class="container d-flex justify-content-center">
-    <div class="card shadow-sm p-4 mt-4" style="max-width: 480px; width: 100%;">
+<div class="premium-transfer">
 
-        <h3 class="fw-bold mb-4 text-center">🔄 Transferir</h3>
-
-        <form method="post">
-
-            <!-- Tipo do Documento -->
-            <div class="mb-3">
-                <label class="form-label">Tipo do Documento</label>
-                <div class="input-group">
-                    <span class="input-group-text">🧾</span>
-                    <select name="doc_tipo" id="doc-tipo" class="form-select">
-                        <option value="cpf">CPF</option>
-                        <option value="cnpj">CNPJ</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Documento -->
-            <div class="mb-3">
-                <label id="doc-label" class="form-label">CPF do destinatário</label>
-                <div class="input-group">
-                    <span class="input-group-text">🧑</span>
-                    <input type="text"
-                           id="doc-input"
-                           name="documento"
-                           class="form-control"
-                           placeholder="000.000.000-00"
-                           required>
-                </div>
-            </div>
-
-            <!-- Valor -->
-            <div class="mb-3">
-                <label class="form-label">Valor</label>
-                <div class="input-group">
-                    <span class="input-group-text">💸</span>
-                    <input type="text"
-                           name="valor"
-                           class="form-control money-input"
-                           placeholder="0,00"
-                           required>
-                </div>
-            </div>
-
-            <!-- Botão -->
-            <button class="btn btn-success w-100 fw-semibold mt-2" type="submit">
-                CONFIRMAR TRANSFERÊNCIA
-            </button>
-
-        </form>
-
+    <div class="transfer-header">
+        <h2>🔄 Transferir</h2>
     </div>
+
+    <form method="post">
+
+        <!-- Seleção CPF/CNPJ -->
+        <div class="form-group enhanced-input">
+            <label>Tipo do documento</label>
+            <div class="select-wrapper">
+            <select name="doc_tipo" id="doc-tipo" class="doc-select">
+                <option value="cpf">CPF</option>
+                <option value="cnpj">CNPJ</option>
+            </select>
+            </div>
+        </div>
+
+        <!-- Campo CPF/CNPJ -->
+        <div class="form-group enhanced-input">
+            <label id="doc-label">CPF do destinatário</label>
+            <div class="input-wrapper">
+                <span class="input-icon">🧑</span>
+                <input type="text" id="doc-input" name="documento" placeholder="000.000.000-00" required>
+            </div>
+        </div>
+
+        <!-- Valor -->
+        <div class="form-group enhanced-input">
+            <label>Valor</label>
+            <div class="input-wrapper">
+                <span class="input-icon">💸</span>
+                <input type="text" name="valor" class="money-input">
+            </div>
+        </div>
+
+        <button class="btn transfer-btn" type="submit">CONFIRMAR TRANSFERÊNCIA</button>
+
+    </form>
 </div>
-
-<!-- Script de máscara dinâmica CPF/CNPJ -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const input = document.getElementById("doc-input");
-    const tipo = document.getElementById("doc-tipo");
-    const label = document.getElementById("doc-label");
-
-    function formatCPF(v) {
-        return v.replace(/\D/g, "")
-                .replace(/(\d{3})(\d)/, "$1.$2")
-                .replace(/(\d{3})(\d)/, "$1.$2")
-                .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-    }
-
-    function formatCNPJ(v) {
-        return v.replace(/\D/g, "")
-                .replace(/(\d{2})(\d)/, "$1.$2")
-                .replace(/(\d{3})(\d)/, "$1.$2")
-                .replace(/(\d{3})(\d)/, "$1/$2")
-                .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
-    }
-
-    tipo.addEventListener("change", () => {
-        input.value = "";
-        if (tipo.value === "cpf") {
-            label.textContent = "CPF do destinatário";
-            input.placeholder = "000.000.000-00";
-            input.maxLength = 14;
-        } else {
-            label.textContent = "CNPJ do destinatário";
-            input.placeholder = "00.000.000/0000-00";
-            input.maxLength = 18;
-        }
-    });
-
-    input.addEventListener("input", (e) => {
-        e.target.value = tipo.value === "cpf"
-            ? formatCPF(e.target.value)
-            : formatCNPJ(e.target.value);
-    });
-});
-</script>
 
 {% endblock %}

@@ -1,129 +1,80 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard - Tiger Bank{% endblock %}
-
 {% block header %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-    <div class="container">
+<div class="profile-header">
 
-        <div class="d-flex align-items-center gap-3">
-            <img 
-                src="{{ url_for('static', filename='img/tigre.png') }}"
-                alt="Ícone do Tigre"
-                class="rounded-circle"
-                style="width:48px; height:48px;"
-            >
-            <h5 class="m-0 text-white fw-semibold">
-                Olá, {{ current_user.name.split(' ')[0] }}
-            </h5>
-        </div>
+    <!-- Ícone -->
+    <img class="perfil-icon" src="{{ url_for('static', filename='img/tigre.png') }}" alt="Ícone do Tigre">
 
-        <form action="{{ url_for('auth.logout') }}" method="post" class="m-0">
-            <button class="btn btn-warning fw-semibold px-3">
-                Sair
-            </button>
-        </form>
+    <!-- Título -->
+    <h1>Olá, {{ current_user.name.split(' ')[0] }}</h1>
 
-    </div>
-</nav>
+    <!-- Botão voltar no canto direito -->
+    <nav>
+        <button class="btn btn-warning" style="width:auto;padding:10px 20px">SAIR</button>
+    </nav>
+
+</div>
 {% endblock %}
-
 {% block content %}
+<div class="dashboard">
 
-<!-- ===================== CARROSSEL ===================== -->
-<div id="carouselTiger" class="carousel slide mt-4 mb-4" data-bs-ride="carousel">
-
-    <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselTiger" data-bs-slide-to="0" class="active"></button>
-        <button type="button" data-bs-target="#carouselTiger" data-bs-slide-to="1"></button>
-        <button type="button" data-bs-target="#carouselTiger" data-bs-slide-to="2"></button>
+  <div class="carousel-container">
+    <div class="carousel-slide slide1 active">
+      <div><h3>🎉 Cashback de 5%</h3><p>Ganhe 5% de volta nas compras</p></div>
     </div>
-
-    <div class="carousel-inner rounded shadow-sm">
-
-        <div class="carousel-item active bg-primary text-white text-center p-4">
-            <h3>🎉 Cashback de 5%</h3>
-            <p>Aproveite e economize mais</p>
-        </div>
-
-        <div class="carousel-item bg-success text-white text-center p-4">
-            <h3>📈 Investimentos</h3>
-            <p>A partir de R$ 100</p>
-        </div>
-
-        <div class="carousel-item bg-dark text-white text-center p-4">
-            <h3>⚡ PIX 24h</h3>
-            <p>Envios instantâneos</p>
-        </div>
-
+    <div class="carousel-slide slide2">
+      <div><h3>📈 Investimentos</h3><p>A partir de R$ 100</p></div>
     </div>
+    <div class="carousel-slide slide3">
+      <div><h3>⚡ PIX</h3><p>24/7 instantâneo</p></div>
+    </div>
+    <div class="carousel-dots">
+      <div class="carousel-dot active"></div>
+      <div class="carousel-dot"></div>
+      <div class="carousel-dot"></div>
+    </div>
+  </div>
 
+  <div class="balance-card">
+    <div class="label">💰 Saldo Disponível</div>
+    <div class="amount">R$ {{ '%.2f'|format(account.balance|float) }}</div>
+    <div class="type">Conta {{ account.type }}</div>
+  </div>
+
+  <div class="action-buttons">
+    <a class="action-btn" href="{{ url_for('tx.deposito') }}">
+      <div class="action-btn-icon">💵</div><div class="action-btn-text">Depositar</div>
+    </a>
+
+    <a class="action-btn green" href="{{ url_for('tx.saque') }}">
+      <div class="action-btn-icon">💸</div><div class="action-btn-text">Sacar</div>
+    </a>
+
+    <a class="action-btn" href="{{ url_for('tx.transferencia') }}">
+      <div class="action-btn-icon">🔄</div><div class="action-btn-text">Transferir</div>
+    </a>
+
+    <a class="action-btn green" href="{{ url_for('tx.pix') }}">
+      <div class="action-btn-icon">⚡</div><div class="action-btn-text">PIX</div>
+    </a>
+
+    <a class="action-btn purple" href="{{ url_for('tx.emprestimo') }}">
+      <div class="action-btn-icon">💰</div><div class="action-btn-text">Empréstimo</div>
+    </a>
+
+    <a class="action-btn purple" href="{{ url_for('tx.investimentos') }}">
+      <div class="action-btn-icon">📈</div><div class="action-btn-text">Investir</div>
+    </a>
+
+    <a class="action-btn green" href="{{ url_for('tx.extrato') }}">
+      <div class="action-btn-icon">📋</div><div class="action-btn-text">Extrato</div>
+    </a>
+    <a class="action-btn" href="{{ url_for('profile.view') }}">
+      <div class="action-btn-icon">👤</div>
+      <div class="action-btn-text">Perfil</div>
+    </a>
+
+  </div>
 </div>
-
-
-<!-- ===================== SALDO ===================== -->
-<div class="card shadow-sm mb-4">
-    <div class="card-body text-center">
-        <h6 class="text-muted m-0">💰 Saldo Disponível</h6>
-        <h2 class="fw-bold my-2">
-            R$ {{ '%.2f'|format(account.balance|float) }}
-        </h2>
-        <span class="badge bg-primary">Conta {{ account.type }}</span>
-    </div>
-</div>
-
-
-<!-- ===================== AÇÕES BANCÁRIAS ===================== -->
-<div class="row g-3">
-
-    <div class="col-6 col-md-4">
-        <a href="{{ url_for('tx.deposito') }}" class="btn-action">
-            💵<span>Depositar</span>
-        </a>
-    </div>
-
-    <div class="col-6 col-md-4">
-        <a href="{{ url_for('tx.saque') }}" class="btn-action btn-green">
-            💸<span>Sacar</span>
-        </a>
-    </div>
-
-    <div class="col-6 col-md-4">
-        <a href="{{ url_for('tx.transferencia') }}" class="btn-action">
-            🔄<span>Transferir</span>
-        </a>
-    </div>
-
-    <div class="col-6 col-md-4">
-        <a href="{{ url_for('tx.pix') }}" class="btn-action btn-green">
-            ⚡<span>PIX</span>
-        </a>
-    </div>
-
-    <div class="col-6 col-md-4">
-        <a href="{{ url_for('tx.emprestimo') }}" class="btn-action btn-purple">
-            💰<span>Empréstimo</span>
-        </a>
-    </div>
-
-    <div class="col-6 col-md-4">
-        <a href="{{ url_for('tx.investimentos') }}" class="btn-action btn-purple">
-            📈<span>Investir</span>
-        </a>
-    </div>
-
-    <div class="col-6 col-md-4">
-        <a href="{{ url_for('tx.extrato') }}" class="btn-action btn-green">
-            📋<span>Extrato</span>
-        </a>
-    </div>
-
-    <div class="col-6 col-md-4">
-        <a href="{{ url_for('profile.view') }}" class="btn-action">
-            👤<span>Perfil</span>
-        </a>
-    </div>
-
-</div>
-
-
 {% endblock %}

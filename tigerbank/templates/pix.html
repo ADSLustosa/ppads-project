@@ -1,81 +1,76 @@
 {% extends 'base.html' %}
-{% block title %}PIX - Tiger Bank{% endblock %}
+{% block title %}⚡ PIX - Tiger Bank{% endblock %}
 
 {% block header %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-    <div class="container d-flex justify-content-between align-items-center">
+<div class="profile-header">
 
-        <div class="d-flex align-items-center gap-2">
-            <img src="{{ url_for('static', filename='img/tigre.png') }}"
-                    width="40" height="40"
-                    class="rounded-circle">
-            <h5 class="m-0 text-white fw-semibold">PIX</h5>
-        </div>
+    <!-- Ícone -->
+    <img class="perfil-icon" src="{{ url_for('static', filename='img/tigre.png') }}" alt="Ícone do Tigre">
 
-        <a class="btn btn-light fw-semibold px-3"
-            href="{{ url_for('dashboard.index') }}">
-            Voltar
-        </a>
-    </div>
-</nav>
+    <!-- Título -->
+    <h1>PIX</h1>
+
+    <!-- Botão voltar no canto direito -->
+    <nav>
+        <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
+    </nav>
+
+</div>
 {% endblock %}
+
 
 {% block content %}
 
-<div class="container mt-4">
-    <div class="card shadow-sm p-4">
+<!-- CARD PREMIUM -->
+<div class="premium-transfer">
 
-        <!-- Título -->
-        <h3 class="fw-bold mb-4">⚡ Enviar PIX</h3>
-
-        <form method="post">
-
-            <!-- Tipo de chave PIX -->
-            <div class="mb-3">
-                <label class="form-label">Tipo de Chave PIX</label>
-                <select name="tipo_pix" id="tipo-pix" class="form-select">
-                    <option value="email">E-mail</option>
-                    <option value="cpf">CPF</option>
-                    <option value="cnpj">CNPJ</option>
-                    <option value="celular">Celular</option>
-                    <option value="aleatoria">Chave Aleatória</option>
-                </select>
-            </div>
-
-            <!-- Chave PIX -->
-            <div class="mb-3">
-                <label id="pix-label" class="form-label">Chave PIX (e-mail)</label>
-                <div class="input-group">
-                    <span class="input-group-text">🔑</span>
-                    <input type="text"
-                            id="pix-input"
-                            name="chave"
-                            class="form-control"
-                            placeholder="email@exemplo.com"
-                            required>
-                </div>
-            </div>
-
-            <!-- Valor -->
-            <div class="mb-3">
-                <label class="form-label">Valor</label>
-                <div class="input-group">
-                    <span class="input-group-text">💸</span>
-                    <input type="text"
-                            name="valor"
-                            class="form-control money-input"
-                            placeholder="0,00"
-                            required>
-                </div>
-            </div>
-
-            <!-- Botão enviar -->
-            <button class="btn btn-success w-100 fw-semibold" type="submit">
-                CONFIRMAR PIX
-            </button>
-
-        </form>
+    <div class="transfer-header">
+        <h2>⚡ PIX</h2>
     </div>
+
+    <form method="post">
+
+        <!-- Tipo de chave PIX -->
+        <div class="form-group enhanced-input">
+            <label>Tipo de Chave PIX</label>
+            <div class="select-wrapper">
+            <select name="tipo_pix" id="tipo-pix" class="doc-select">
+                <option value="email">E-mail</option>
+                <option value="cpf">CPF</option>
+                <option value="cnpj">CNPJ</option>
+                <option value="celular">Celular</option>
+                <option value="aleatoria">Chave Aleatória</option>
+            </select>
+            </div>
+        </div>
+
+        <!-- Chave PIX -->
+        <div class="form-group enhanced-input">
+    <label id="pix-label">Chave PIX (e-mail)</label>
+    <div class="input-wrapper">
+        <span class="input-icon">🔑</span>
+        <input type="text"
+            id="pix-input"
+            name="chave"
+            placeholder="email@exemplo.com"
+            required>
+    </div>
+</div>
+
+        <!-- Valor -->
+        <div class="form-group enhanced-input">
+            <label>Valor</label>
+            <div class="input-wrapper">
+                <span class="input-icon">💸</span>
+                <input type="text" name="valor" class="money-input">
+            </div>
+        </div>
+
+        <button class="btn transfer-btn" type="submit">
+            CONFIRMAR PIX
+        </button>
+
+    </form>
 </div>
 
 {% endblock %}
