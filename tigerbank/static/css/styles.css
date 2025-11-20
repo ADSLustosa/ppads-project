@@ -37,6 +37,38 @@ body:has(.logo) .header {
     margin-bottom:10px;
 }
 
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* ícone/esquerda — espaço — botão/direita */
+    padding: 20px;
+    width: 100%;
+}
+
+/* Ícone */
+.perfil-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: rgba(255,255,255,0.07);
+    padding: 6px;
+    margin-right: 15px;
+}
+
+/* Mantém título perto do ícone */
+.profile-header h1 {
+    font-size: 32px;
+    margin: 0 0 0 10px;
+    flex-grow: 1; /* ocupa o espaço central */
+}
+
+/* Botão voltar no canto direito */
+.profile-header nav {
+    margin-left: auto;
+}
+
+
 .container-box {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
@@ -520,4 +552,391 @@ button[type="submit"] + a.btn.btn-secondary:focus-visible{
     .action-buttons{grid-template-columns:repeat(2,1fr)}
     .action-btn-icon{font-size:36px}
 }
-/* Teste*/
+
+
+
+/* ------------------------------------------------------------------
+            INPUT WRAPPER GLOBAL — padrão premium
+------------------------------------------------------------------ */
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #0c1836;
+    border-radius: 14px;
+    padding: 14px 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: .25s ease;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.input-wrapper:focus-within {
+    border-color: #00e0ff;
+    background: #112955;
+    box-shadow: 0 0 8px #00e0ff33;
+}
+
+/* Ícone */
+.input-icon {
+    font-size: 18px;
+    opacity: .75;
+    user-select: none;
+}
+
+/* Input estilizado */
+.input-wrapper input,
+.input-wrapper select {
+    flex: 1;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: #fff !important;
+    font-size: 17px;
+    padding: 0;
+    caret-color: #00e0ff;
+}
+
+/* Placeholder mais clean */
+.input-wrapper input::placeholder {
+    color: rgba(255,255,255,0.55);
+}
+
+/* ============================================
+   SELECT — ESTILO TIGERBANK PROFISSIONAL
+   ============================================ */
+
+select {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 16px;
+    color: #fff;
+    background: #0c1836;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    outline: none;
+    appearance: none;             /* Remove o select nativo */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    transition: .25s ease;
+    position: relative;
+}
+
+/* hover */
+select:hover {
+    background: #13224a;
+    border-color: rgba(255,255,255,0.25);
+}
+
+/* focus */
+select:focus {
+    background: #162a55;
+    border-color: #ff9900;
+    box-shadow: 0 0 8px #ff990044;
+}
+
+/* ----------- SETA CUSTOMIZADA ------------ */
+select::-ms-expand {
+    display: none; /* remove a seta no IE/Edge legado */
+}
+
+/* wrapper para aplicar pseudo-elemento */
+.select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* seta */
+.select-wrapper::after {
+    content: "▾";                   /* seta */
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #ffffffaa;
+    pointer-events: none;
+    transition: .25s ease;
+}
+
+.select-wrapper:hover::after {
+    color: #ffffffdd;
+}
+.select-wrapper:focus-within::after {
+    color: #ff9900;
+}
+
+
+/* ========================= TRANSFERÊNCIA ========================== */
+
+/* CARD */
+.premium-transfer {
+    background: rgba(255,255,255,0.03);
+    padding: 35px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 25px rgba(0,0,0,0.25);
+    margin-top: 20px;
+}
+
+.transfer-header h2 {
+    margin: 0 0 20px 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Remove setas dos inputs type="number" (Chrome, Edge, Safari) */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Remove setas no Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.enhanced-input label {
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+.doc-select {
+    width: 100%;
+    background: #0c1836;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 12px;
+    color: white;
+    font-size: 16px;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    background: #0c1836;
+    border-radius: 12px;
+    padding: 13px;
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-top: 6px;
+    transition: .2s ease;
+}
+
+.input-wrapper:focus-within {
+    border-color: #ff9900;
+    background: #14244a;
+    box-shadow: 0 0 6px #ff990033;
+}
+
+.input-icon {
+    font-size: 18px;
+    opacity: .75;
+    padding-right: 12px;
+}
+
+.input-wrapper input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 17px;
+}
+
+.transfer-btn {
+    margin-top: 25px;
+    width: 100%;
+    background: linear-gradient(90deg, #ff8c00, #ffa31a);
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    transition: .2s ease;
+}
+
+.transfer-btn:hover {
+    transform: scale(1.01);
+    opacity: 0.95;
+}
+
+/* CARD TITLES */
+.card-title {
+    font-size: 22px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+
+/* FORM CARD */
+.investment-form-card {
+    padding: 35px;
+    border-radius: 20px;
+}
+
+
+
+
+/* ========================== INVESTIMENTOS ===================== */
+.investment-list-card {
+    padding: 35px;
+    border-radius: 20px;
+}
+
+.investment-item {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 20px 25px;
+    border-radius: 15px;
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.investment-item:hover {
+    background: rgba(255,255,255,0.08);
+    transition: .25s;
+}
+
+.inv-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.inv-details {
+    font-size: 14px;
+    opacity: .85;
+}
+
+/* BOTÃO RESGATAR */
+.resgatar-btn {
+    background: linear-gradient(90deg, #ff8c00, #ff6b5f);
+    padding: 12px 30px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.resgatar-btn:hover {
+    transform: scale(1.03);
+    opacity: .9;
+}
+
+/* EMPTY STATE */
+.empty-state {
+    text-align: center;
+    padding: 15px;
+    opacity: .6;
+    margin-top: 10px;
+}
+
+
+/* ====================== EXTRATO ====================== */
+.extract-card {
+    padding: 30px;
+    border-radius: 22px;
+}
+
+/* TÍTULO */
+.extract-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+/* ITEM DO EXTRATO */
+.extract-item {
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 20px 25px;
+    margin-bottom: 18px;
+    border-left: 6px solid #888;
+    transition: .20s ease;
+}
+
+.extract-item:hover {
+    background: rgba(255,255,255,0.09);
+}
+
+/* LINHA DO TEMPO */
+.extract-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.85;
+    margin-bottom: 8px;
+}
+
+.extract-date {
+    font-size: 14px;
+}
+
+/* DETALHES INTERNOS */
+.extract-body {
+    margin-top: 5px;
+}
+
+.extract-kind {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.extract-description {
+    margin: 6px 0 10px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* VALORES CREDITADOS E DEBITADOS */
+.extract-value {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 3px 0 8px;
+}
+
+.extract-value.credit {
+    color: #00ffb2;
+}
+
+.extract-value.debit {
+    color: #ff6b81;
+}
+
+/* COR DA BORDA LATERAL */
+.extract-item.credit {
+    border-left-color: #00d2d3;
+}
+
+.extract-item.debit {
+    border-left-color: #ff6b81;
+}
+
+/* SALDO APÓS OPERAÇÃO */
+.extract-balance {
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+/* ESTADO VAZIO */
+.extract-empty {
+    text-align: center;
+    opacity: 0.7;
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: 500;
+}

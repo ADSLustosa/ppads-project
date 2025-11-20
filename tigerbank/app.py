@@ -12,6 +12,7 @@ from .blueprints.transactions import bp as tx_bp
 from .blueprints.profile import bp as profile_bp
 from . import models  # garante modelos carregados p/ migrations
 
+#alteração praticando aula 5
 
 def create_app(config_class: type[Config] = Config) -> Flask:
     app = Flask(
