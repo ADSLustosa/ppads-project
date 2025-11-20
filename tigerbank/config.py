@@ -6,19 +6,21 @@ BASE_DIR = Path(__file__).resolve().parent
 INSTANCE_DIR = BASE_DIR / "instance"
 INSTANCE_DIR.mkdir(exist_ok=True)
 
+
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-unsafe-change-me")
     WTF_CSRF_ENABLED = False
 
-    # Captura a URL do Render
     DATABASE_URL = os.getenv(
         "DATABASE_URL",
         f"sqlite:///{(INSTANCE_DIR / 'tiger_bank.db').as_posix()}",
     )
 
-    # ⚠️ Correção obrigatória do prefixo Postgres do Render
     if DATABASE_URL.startswith("postgres://"):
-        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
+
+    if DATABASE_URL.startswith("postgresql://") and "+psycopg" not in DATABASE_URL:
+        DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
 
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
 
