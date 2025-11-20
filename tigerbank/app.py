@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from flask import Flask, send_from_directory
 
-from .config import Config
+from tigerbank.config import Config
 from .extensions import db, migrate, login_manager, csrf
 from .blueprints.auth import bp as auth_bp
 from .blueprints.dashboard import bp as dash_bp

@@ -1,2 +1,3 @@
-from tigerbank import create_app
+from tigerbank.app import create_app
+
 app = create_app()

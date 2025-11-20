@@ -1,9 +1,6 @@
-
 from __future__ import annotations
 import os
 from pathlib import Path
-from tigerbank.config import * 
-
 
 BASE_DIR = Path(__file__).resolve().parent
 INSTANCE_DIR = BASE_DIR / "instance"
@@ -11,7 +8,7 @@ INSTANCE_DIR.mkdir(exist_ok=True)
 
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-unsafe-change-me")
-    WTF_CSRF_ENABLED = False  # desativa CSRF (somente para testes)
+    WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",
         f"sqlite:///{(INSTANCE_DIR / 'tiger_bank.db').as_posix()}",
