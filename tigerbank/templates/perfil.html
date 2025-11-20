@@ -1,130 +1,191 @@
 {% extends 'base.html' %}
-{% block title %}👤 Perfil - Tiger Bank{% endblock %}
+{% block title %}Meu Perfil - Tiger Bank{% endblock %}
 
 {% block header %}
-<div class="profile-header">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
 
-    <!-- Ícone -->
-    <img class="perfil-icon" src="{{ url_for('static', filename='img/tigre.png') }}" alt="Ícone do Tigre">
+        <div class="d-flex align-items-center gap-2">
+            <img src="{{ url_for('static', filename='img/tigre.png') }}"
+                    width="40" height="40" class="rounded-circle">
+            <h5 class="m-0 text-white fw-semibold">Meu Perfil</h5>
+        </div>
 
-    <!-- Título -->
-    <h1>Meu Perfil</h1>
+        <a class="btn btn-light fw-semibold px-3"
+            href="{{ url_for('dashboard.index') }}">
+            Voltar
+        </a>
 
-    <!-- Botão voltar -->
-    <nav>
-        <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
-    </nav>
-
-</div>
+    </div>
+</nav>
 {% endblock %}
 
 {% block content %}
 
-<!-- ===================================================== -->
-<!-- CARD: MEU PERFIL -->
-<!-- ===================================================== -->
-<div class="card">
-    <h2>👤 Meu Perfil</h2>
+<div class="container mt-4">
 
-    <div class="user-header">
-        <div class="user-avatar">{{ current_user.name[0] | upper }}</div>
-        <div class="user-info">
-            <h3>{{ current_user.name }}</h3>
-            <p>Conta {{ current_user.account.type }}</p>
+    <!-- ============================= -->
+    <!-- CARD DADOS DO PERFIL          -->
+    <!-- ============================= -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <h4 class="fw-bold mb-3">👤 Meu Perfil</h4>
+
+            <div class="d-flex align-items-center mb-4">
+
+                <!-- Avatar -->
+                <div class="rounded-circle bg-primary text-white fw-bold d-flex 
+                            justify-content-center align-items-center"
+                        style="width:70px;height:70px;font-size:28px;">
+                    {{ current_user.name[0].upper() }}
+                </div>
+
+                <!-- Informações -->
+                <div class="ms-3">
+                    <h5 class="fw-bold m-0">{{ current_user.name }}</h5>
+                    <p class="text-muted m-0">
+                        Conta {{ current_user.account.type }}
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-12 col-md-6 mb-3">
+                    <label class="fw-semibold text-muted">CPF</label>
+                    <div class="fw-bold">
+                        {{ current_user.cpf | cpf }}
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 mb-3">
+                    <label class="fw-semibold text-muted">E-mail</label>
+                    <div class="fw-bold">
+                        {{ current_user.email }}
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 mb-3">
+                    <label class="fw-semibold text-muted">Saldo Atual</label>
+                    <div class="fw-bold text-success">
+                        R$ {{ '%.2f'|format(current_user.account.balance|float) }}
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 mb-3">
+                    <label class="fw-semibold text-muted">Membro desde</label>
+                    <div class="fw-bold">
+                        {{ current_user.created_at.strftime('%d/%m/%Y') }}
+                    </div>
+                </div>
+
+            </div>
+
         </div>
     </div>
 
-    <div class="user-data-grid">
+    <!-- ============================= -->
+    <!-- EDITAR INFORMAÇÕES            -->
+    <!-- ============================= -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
 
-        <div class="user-data-item">
-            <label>CPF</label>
-            <div class="value">{{ current_user.cpf | cpf }}</div>
+            <h4 class="fw-bold mb-3 text-center">✏️ Editar Informações</h4>
+
+            <form method="post" action="{{ url_for('profile.update') }}">
+
+                <!-- Nome -->
+                <div class="mb-3">
+                    <label class="form-label">Nome</label>
+                    <div class="input-group">
+                        <span class="input-group-text">👤</span>
+                        <input type="text"
+                                name="name"
+                                class="form-control"
+                                value="{{ current_user.name }}"
+                                required>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label class="form-label">E-mail</label>
+                    <div class="input-group">
+                        <span class="input-group-text">📧</span>
+                        <input type="email"
+                                name="email"
+                                class="form-control"
+                                value="{{ current_user.email }}"
+                                required>
+                    </div>
+                </div>
+
+                <button class="btn btn-success w-100 fw-semibold" type="submit">
+                    SALVAR
+                </button>
+
+            </form>
         </div>
-
-        <div class="user-data-item">
-            <label>E-mail</label>
-            <div class="value">{{ current_user.email }}</div>
-        </div>
-
-        <div class="user-data-item">
-            <label>Saldo Atual</label>
-            <div class="value">R$ {{ '%.2f'|format(current_user.account.balance | float) }}</div>
-        </div>
-
-        <div class="user-data-item">
-            <label>Membro desde</label>
-            <div class="value">{{ current_user.created_at.strftime('%d/%m/%Y') }}</div>
-        </div>
-
     </div>
+
+    <!-- ============================= -->
+    <!-- ALTERAR SENHA                 -->
+    <!-- ============================= -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <h4 class="fw-bold mb-3 text-center">🔒 Alterar Senha</h4>
+
+            <form method="post" action="{{ url_for('profile.change_password') }}">
+
+                <!-- Senha atual -->
+                <div class="mb-3">
+                    <label class="form-label">Senha atual</label>
+                    <div class="input-group">
+                        <span class="input-group-text">🔑</span>
+                        <input type="password"
+                                name="atual"
+                                class="form-control"
+                                required>
+                    </div>
+                </div>
+
+                <!-- Nova senha -->
+                <div class="mb-3">
+                    <label class="form-label">Nova senha</label>
+                    <div class="input-group">
+                        <span class="input-group-text">🛡️</span>
+                        <input type="password"
+                                name="nova"
+                                minlength="8"
+                                class="form-control"
+                                required>
+                    </div>
+                </div>
+
+                <!-- Confirmar nova senha -->
+                <div class="mb-3">
+                    <label class="form-label">Confirmar nova senha</label>
+                    <div class="input-group">
+                        <span class="input-group-text">🛡️</span>
+                        <input type="password"
+                                name="conf"
+                                class="form-control"
+                                required>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary w-100 fw-semibold" type="submit">
+                    ALTERAR SENHA
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
 </div>
-
-
-<!-- ===================================================== -->
-<!-- EDITAR INFORMAÇÕES -->
-<!-- ===================================================== -->
-<h3 style="margin:40px 0 20px; text-align:center;">✏️ Editar Informações</h3>
-
-<form method="post" action="{{ url_for('profile.update') }}" class="card">
-
-    <!-- Nome -->
-    <div class="form-group enhanced-input">
-        <label>Nome</label>
-        <div class="input-wrapper">
-            <span class="input-icon">👤</span>
-            <input type="text" name="name" value="{{ current_user.name }}" required>
-        </div>
-    </div>
-
-    <!-- Email -->
-    <div class="form-group enhanced-input">
-        <label>E-mail</label>
-        <div class="input-wrapper">
-            <span class="input-icon">📧</span>
-            <input type="email" name="email" value="{{ current_user.email }}" required>
-        </div>
-    </div>
-
-
-    <button class="btn btn-success" type="submit">SALVAR</button>
-</form>
-
-
-<!-- ===================================================== -->
-<!-- ALTERAR SENHA -->
-<!-- ===================================================== -->
-<h3 style="margin:40px 0 20px; text-align:center;">🔒 Alterar Senha</h3>
-
-<form method="post" action="{{ url_for('profile.change_password') }}" class="card">
-
-    <!-- Senha atual -->
-    <div class="form-group enhanced-input">
-        <label>Senha atual</label>
-        <div class="input-wrapper">
-            <span class="input-icon">🔑</span>
-            <input type="password" name="atual" required>
-        </div>
-    </div>
-
-    <!-- Nova senha -->
-    <div class="form-group enhanced-input">
-        <label>Nova senha</label>
-        <div class="input-wrapper">
-            <span class="input-icon">🛡️</span>
-            <input type="password" name="nova" minlength="8" required>
-        </div>
-    </div>
-
-    <!-- Confirmar -->
-    <div class="form-group enhanced-input">
-        <label>Confirmar nova senha</label>
-        <div class="input-wrapper">
-            <span class="input-icon">🛡️</span>
-            <input type="password" name="conf" required>
-        </div>
-    </div>
-
-    <button class="btn btn-primary" type="submit">ALTERAR SENHA</button>
-</form>
 
 {% endblock %}

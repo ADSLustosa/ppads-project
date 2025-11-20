@@ -1,66 +1,95 @@
 {% extends 'base.html' %}
-{% block title %}📄 Extrato - Tiger Bank{% endblock %}
+{% block title %}Extrato - Tiger Bank{% endblock %}
 
 {% block header %}
-<div class="profile-header">
-    <img class="perfil-icon" src="{{ url_for('static', filename='img/tigre.png') }}" alt="Ícone do Tigre">
-    <h1>Extrato</h1>
-    <nav>
-        <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
-    </nav>
-</div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+        
+        <div class="d-flex align-items-center gap-2">
+            <img src="{{ url_for('static', filename='img/tigre.png') }}" 
+                 alt="Ícone do Tigre" 
+                 width="40" height="40" class="rounded-circle">
+            <h5 class="m-0 text-white fw-semibold">Extrato</h5>
+        </div>
+
+        <a class="btn btn-light fw-semibold px-3" href="{{ url_for('dashboard.index') }}">
+            Voltar
+        </a>
+
+    </div>
+</nav>
 {% endblock %}
 
 {% block content %}
 
-<div class="card extract-card">
+<div class="container mt-4">
 
-    <h2 class="extract-title">
-        <span>📑</span> Extrato
-    </h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
 
-    {% if txs %}
-        {% for tx in txs %}
+            <h4 class="fw-bold mb-3">
+                📑 Extrato de Transações
+            </h4>
 
-            {% set is_credit = tx.amount > 0 %}
-            {% set cor = 'credit' if is_credit else 'debit' %}
-            {% set sinal = '+' if is_credit else '-' %}
+            {% if txs %}
 
-            <div class="extract-item {{ cor }}">
+                <ul class="list-group list-group-flush">
 
-                <div class="extract-header">
-                    <span class="extract-icon">🗓️</span>
-                    <span class="extract-date">
-                        {{ tx.created_at.strftime('%d/%m/%Y %H:%M') }}
-                    </span>
-                </div>
+                {% for tx in txs %}
 
-                <div class="extract-body">
+                    {% set is_credit = tx.amount > 0 %}
+                    {% set sinal = '+' if is_credit else '-' %}
+                    {% set cor = 'text-success' if is_credit else 'text-danger' %}
 
-                    <div class="extract-kind">
-                        {{ tx.kind }}
-                    </div>
+                    <li class="list-group-item py-3">
 
-                    <div class="extract-value {{ cor }}">
-                        {{ sinal }} R$ {{ '%.2f'|format(tx.amount|float|abs) }}
-                    </div>
+                        <div class="d-flex justify-content-between">
 
-                    {% if tx.description %}
-                        <div class="extract-description">
-                            {{ tx.description }}
+                            <div>
+
+                                <!-- Tipo -->
+                                <div class="fw-bold">{{ tx.kind }}</div>
+
+                                <!-- Descrição -->
+                                {% if tx.description %}
+                                <div class="text-muted small">{{ tx.description }}</div>
+                                {% endif %}
+
+                                <!-- Data -->
+                                <div class="text-muted small mt-1">
+                                    🗓️ {{ tx.created_at.strftime('%d/%m/%Y %H:%M') }}
+                                </div>
+
+                                <!-- Saldo após -->
+                                <div class="small mt-1 fw-semibold">
+                                    💰 Saldo após: R$ {{ '%.2f'|format(tx.balance_after|float) }}
+                                </div>
+
+                            </div>
+
+                            <!-- Valor -->
+                            <div class="fs-5 fw-bold {{ cor }}">
+                                {{ sinal }} R$ {{ '%.2f'|format(tx.amount|float|abs) }}
+                            </div>
+
                         </div>
-                    {% endif %}
 
-                    <div class="extract-balance">
-                        💰 <strong>Saldo após: R$ {{ '%.2f'|format(tx.balance_after|float) }}</strong>
-                    </div>
-                </div>
-            </div>
+                    </li>
 
-        {% endfor %}
-    {% else %}
-        <p class="extract-empty">Nenhuma transação registrada.</p>
-    {% endif %}
+                {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="text-center text-muted my-4">
+                    Nenhuma transação registrada.
+                </p>
+
+            {% endif %}
+
+        </div>
+    </div>
 
 </div>
 

@@ -1,56 +1,153 @@
 {% extends 'base.html' %}
 {% block title %}Criar Conta - Tiger Bank{% endblock %}
+
+{% block header %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+
+        <div class="d-flex align-items-center gap-2">
+            <img src="{{ url_for('static', filename='img/tigre.png') }}"
+                 width="40" height="40" class="rounded-circle">
+            <h5 class="m-0 text-white fw-semibold">Criar Conta</h5>
+        </div>
+
+        <a class="btn btn-light fw-semibold px-3"
+           href="{{ url_for('auth.home') }}">
+            Voltar
+        </a>
+
+    </div>
+</nav>
+{% endblock %}
+
 {% block content %}
-<div class="card">
-  <h2>📝 Criar Conta</h2>
-  <form method="post">
-    <div class="form-group">
-      <label>Tipo de Pessoa</label>
-      <div class="radio-group" id="person-type">
-        <label><input type="radio" name="person_type" value="cpf" checked> Pessoa Física (CPF)</label>
-        <label><input type="radio" name="person_type" value="cnpj"> Pessoa Jurídica (CNPJ)</label>
-      </div>
-    </div>
 
-    <div class="form-group">
-      <label id="doc-label">CPF</label>
-      <input type="text" id="doc-input" name="cpf" maxlength="14" placeholder="000.000.000-00" required>
-    </div>
+<div class="container d-flex justify-content-center">
+    <div class="card shadow-sm p-4 mt-4" style="max-width: 500px; width: 100%;">
 
-    <div class="form-group">
-      <label>Nome</label>
-      <input id="name" name="name" required placeholder="Digite seu nome completo">
-    </div>
+        <h3 class="fw-bold mb-4 text-center">📝 Criar Conta</h3>
 
-    <div class="form-group">
-      <label>E-mail</label>
-      <input type="email" id="email" name="email" required placeholder="seu@email.com">
-    </div>
+        <form method="post">
 
-    <div class="form-group">
-      <label>Senha</label>
-      <input type="password" id="password" name="password" minlength="8" required placeholder="Mínimo 8 caracteres">
-      <small id="pass-hint" class="muted"></small>
-    </div>
+            <!-- Tipo de Pessoa -->
+            <div class="mb-3">
+                <label class="form-label">Tipo de Pessoa</label>
+                <div class="d-flex flex-column gap-1">
+                    <label class="fw-semibold">
+                        <input type="radio" name="person_type" value="cpf" checked>
+                        Pessoa Física (CPF)
+                    </label>
+                    <label class="fw-semibold">
+                        <input type="radio" name="person_type" value="cnpj">
+                        Pessoa Jurídica (CNPJ)
+                    </label>
+                </div>
+            </div>
 
-    <div class="form-group">
-      <label>Confirmar Senha</label>
-      <input type="password" id="confirm" name="confirm" required>
-    </div>
+            <!-- CPF / CNPJ -->
+            <div class="mb-3">
+                <label id="doc-label" class="form-label">CPF</label>
+                <div class="input-group">
+                    <span class="input-group-text">🧾</span>
+                    <input type="text"
+                           id="doc-input"
+                           name="cpf"
+                           class="form-control"
+                           maxlength="14"
+                           placeholder="000.000.000-00"
+                           required>
+                </div>
+            </div>
 
-    <div class="form-group">
-      <label>Tipo de Conta</label>
-      <div class="radio-group">
-        <label><input type="radio" name="acc_type" value="Corrente" checked> Conta Corrente</label>
-        <label><input type="radio" name="acc_type" value="Poupança"> Conta Poupança</label>
-      </div>
-    </div>
+            <!-- Nome -->
+            <div class="mb-3">
+                <label class="form-label">Nome</label>
+                <div class="input-group">
+                    <span class="input-group-text">👤</span>
+                    <input id="name"
+                           name="name"
+                           class="form-control"
+                           required
+                           placeholder="Digite seu nome completo">
+                </div>
+            </div>
 
-    <button class="btn btn-success" type="submit">CRIAR CONTA</button>
-    <a class="btn btn-secondary" href="{{ url_for('auth.home') }}">VOLTAR</a>
-  </form>
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label">E-mail</label>
+                <div class="input-group">
+                    <span class="input-group-text">📧</span>
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           class="form-control"
+                           required
+                           placeholder="seu@email.com">
+                </div>
+            </div>
+
+            <!-- Senha -->
+            <div class="mb-1">
+                <label class="form-label">Senha</label>
+                <div class="input-group">
+                    <span class="input-group-text">🔒</span>
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           minlength="8"
+                           class="form-control"
+                           required
+                           placeholder="Mínimo 8 caracteres">
+                </div>
+                <small id="pass-hint" class="text-muted"></small>
+            </div>
+
+            <!-- Confirmar Senha -->
+            <div class="mb-3 mt-3">
+                <label class="form-label">Confirmar Senha</label>
+                <div class="input-group">
+                    <span class="input-group-text">🔒</span>
+                    <input type="password"
+                           id="confirm"
+                           name="confirm"
+                           class="form-control"
+                           required>
+                </div>
+            </div>
+
+            <!-- Tipo de Conta -->
+            <div class="mb-3">
+                <label class="form-label">Tipo de Conta</label>
+                <div class="d-flex flex-column gap-1">
+                    <label class="fw-semibold">
+                        <input type="radio" name="acc_type" value="Corrente" checked>
+                        Conta Corrente
+                    </label>
+                    <label class="fw-semibold">
+                        <input type="radio" name="acc_type" value="Poupança">
+                        Conta Poupança
+                    </label>
+                </div>
+            </div>
+
+            <!-- Botões -->
+            <button class="btn btn-success w-100 fw-semibold" type="submit">
+                CRIAR CONTA
+            </button>
+
+            <a class="btn btn-secondary w-100 mt-2 fw-semibold"
+               href="{{ url_for('auth.home') }}">
+                VOLTAR
+            </a>
+
+        </form>
+
+    </div>
 </div>
 
+<!-- ========================== -->
+<!--     JavaScript Mantido     -->
+<!-- ========================== -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const docInput = document.getElementById("doc-input");
@@ -62,7 +159,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const confirmField = document.getElementById("confirm");
   const hint = document.getElementById("pass-hint");
 
-  // ======== MÁSCARAS CPF / CNPJ ========
   function formatCPF(value) {
     return value.replace(/\D/g, "")
       .replace(/(\d{3})(\d)/, "$1.$2")
@@ -101,18 +197,14 @@ document.addEventListener("DOMContentLoaded", () => {
     e.target.value = type === "cpf" ? formatCPF(e.target.value) : formatCNPJ(e.target.value);
   });
 
-  // ======== BLOQUEIO NÚMEROS EM NOME ========
   nameField.addEventListener("input", (e) => {
     e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, "");
   });
 
-  // ======== E-MAIL FORMATAÇÃO AUTOMÁTICA ========
   emailField.addEventListener("blur", (e) => {
-    e.target.value = e.target.value.trim().toLowerCase();
     e.target.value = e.target.value.trim().toLowerCase();
   });
 
-  // ======== FORÇA DE SENHA ========
   passwordField.addEventListener("input", (e) => {
     const val = e.target.value;
     const hasUpper = /[A-Z]/.test(val);
@@ -122,18 +214,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     hint.textContent = strong
       ? "✔️ Senha forte"
-      : "⚠️ Use letras maiúsculas, minúsculas e números";
-    hint.style.color = strong ? "#00d2d3" : "#f59e0b";
+      : "⚠️ A senha deve conter maiúsculas, minúsculas e números";
+    hint.style.color = strong ? "#00b894" : "#e17055";
   });
 
-  // ======== CONFIRMAÇÃO ========
   confirmField.addEventListener("input", () => {
-    if (confirmField.value && confirmField.value !== passwordField.value) {
-      confirmField.style.borderColor = "#e94560";
-    } else {
-      confirmField.style.borderColor = "";
-    }
+    confirmField.style.borderColor =
+      confirmField.value && confirmField.value !== passwordField.value
+        ? "#d63031"
+        : "";
   });
 });
 </script>
+
 {% endblock %}

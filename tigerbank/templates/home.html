@@ -1,17 +1,48 @@
-
 {% extends 'base.html' %}
 {% block title %}Home - Tiger Bank{% endblock %}
-{% block header %}{% endblock %} 
+
 {% block content %}
-<div class="logo" style="margin-top:40px">
-  <div class="icon"><img src="/static/img/tigre (1).png" alt="Tiger Bank"></div>
-  <h1>Tiger Bank</h1>
-  <p>Seu Banco Digital Completo</p>
-</div>
-<div class="container-box">
-  <div class="auth-buttons">
-    <a class="btn btn-primary" href="{{ url_for('auth.login') }}">ENTRAR</a>
-    <a class="btn btn-success" href="{{ url_for('auth.register') }}">CRIAR CONTA</a>
-  </div>
-</div>
+
+<section class="home-hero text-center py-5">
+    <div class="hero-logo mb-4">
+        <img 
+            src="{{ url_for('static', filename='img/tigre (1).png') }}" 
+            alt="Logo Tiger Bank" 
+            class="hero-img"
+        >
+    </div>
+
+    <h1 class="display-5 fw-bold text-primary">Tiger Bank</h1>
+    <p class="lead text-muted mb-4">Seu Banco Digital Completo</p>
+
+    <div class="d-flex justify-content-center gap-3 mt-4">
+        <a class="btn btn-primary px-4 py-2" href="{{ url_for('auth.login') }}">
+            Entrar
+        </a>
+
+        <a class="btn btn-success px-4 py-2" href="{{ url_for('auth.register') }}">
+            Criar Conta
+        </a>
+    </div>
+</section>
+
+<style>
+    .home-hero {
+        margin-top: 60px;
+    }
+
+    .hero-img {
+        width: 140px;
+        height: auto;
+        user-select: none;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+    }
+
+    @media (max-width: 576px) {
+        .hero-img {
+            width: 110px;
+        }
+    }
+</style>
+
 {% endblock %}

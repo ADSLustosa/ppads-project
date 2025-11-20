@@ -1,35 +1,73 @@
-
 {% extends 'base.html' %}
-{% block title %}💵 Depositar - Tiger Bank{% endblock %}
+{% block title %}Depósito - Tiger Bank{% endblock %}
+
 {% block header %}
-<div class="profile-header">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
 
-    <!-- Ícone -->
-    <img class="perfil-icon" src="{{ url_for('static', filename='img/tigre.png') }}" alt="Ícone do Tigre">
+        <div class="d-flex align-items-center gap-3">
+            <img 
+                src="{{ url_for('static', filename='img/tigre.png') }}"
+                alt="Ícone do Tigre"
+                class="rounded-circle"
+                style="width:48px; height:48px;"
+            >
+            <h5 class="m-0 text-white fw-semibold">Depósito</h5>
+        </div>
 
-    <!-- Título -->
-    <h1>Depósito</h1>
+        <a href="{{ url_for('dashboard.index') }}" class="btn btn-light fw-semibold px-3">
+            Voltar
+        </a>
 
-    <!-- Botão voltar no canto direito -->
-    <nav>
-        <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
-    </nav>
-
-</div>
+    </div>
+</nav>
 {% endblock %}
 
 {% block content %}
-<div class="card">
-  <h2>💵 Depositar</h2>
-  <form method="post">
 
-<div class="form-group">
-  <label>Valor</label>
-  <div class="input-wrapper"><input type="text" name="valor" class="money-input"></div>
-</div>
-<div class="form-group"><label>Descrição</label><div class="input-wrapper"><input name="descricao" placeholder="Depósito em conta"></div></div>
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
 
-    <button class="btn btn-success" type="submit">CONFIRMAR</button>
-  </form>
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <h4 class="fw-bold mb-3">💵 Fazer Depósito</h4>
+
+                <form method="post">
+
+                    <!-- VALOR -->
+                    <div class="mb-3">
+                        <label class="form-label">Valor</label>
+                        <input 
+                            type="text" 
+                            name="valor" 
+                            class="form-control money-input"
+                            placeholder="Ex.: 50,00"
+                            required
+                        >
+                    </div>
+
+                    <!-- DESCRIÇÃO -->
+                    <div class="mb-3">
+                        <label class="form-label">Descrição</label>
+                        <input 
+                            type="text" 
+                            name="descricao" 
+                            class="form-control"
+                            placeholder="Depósito em conta"
+                        >
+                    </div>
+
+                    <!-- CONFIRMAR -->
+                    <button class="btn btn-success w-100 py-2 fw-semibold" type="submit">
+                        Confirmar Depósito
+                    </button>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
 </div>
+
 {% endblock %}

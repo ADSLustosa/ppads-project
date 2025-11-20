@@ -118,7 +118,7 @@ body:has(.logo) .header {
 
 
 .btn-success{
-    background:linear-gradient(135deg,#f16f18);
+    background:linear-gradient(135deg,#f16f18 0%, #ff8c00 100%);
     color:white;
 }
 
@@ -704,7 +704,7 @@ input[type=number] {
     opacity: 0.85;
 }
 
-.doc-select {
+select, .doc-select {
     width: 100%;
     background: #0c1836;
     border: 1px solid rgba(255,255,255,0.08);
@@ -714,22 +714,7 @@ input[type=number] {
     font-size: 16px;
 }
 
-.input-wrapper {
-    display: flex;
-    align-items: center;
-    background: #0c1836;
-    border-radius: 12px;
-    padding: 13px;
-    border: 1px solid rgba(255,255,255,0.05);
-    margin-top: 6px;
-    transition: .2s ease;
-}
 
-.input-wrapper:focus-within {
-    border-color: #ff9900;
-    background: #14244a;
-    box-shadow: 0 0 6px #ff990033;
-}
 
 .input-icon {
     font-size: 18px;
