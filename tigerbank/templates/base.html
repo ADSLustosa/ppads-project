@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -9,18 +8,32 @@
 </head>
 <body>
 <div class="container">
-  <header class="header">
-  {% block header %}
-  <nav>
-    {% if current_user.is_authenticated %}
-    <form action="{{ url_for('auth.logout') }}" method="post" style="display:inline">
-      <button class="btn btn-warning" style="width:auto;padding:10px 20px">SAIR</button>
-    </form>
-    {% endif %}
-  </nav>
-  {% endblock %}
-</header>
 
+  {# ------------------------------------------------------------ #}
+  {#   HEADER RESPONSIVO, MODERNO E ALINHADO                     #}
+  {#   OCULTO APENAS EM /tx/investimentos                       #}
+  {# ------------------------------------------------------------ #}
+  {% if request.endpoint != 'tx.investimentos' %}
+  <header class="main-header">
+      <div class="header-left">
+          {% if current_user.is_authenticated %}
+              <span class="welcome">Olá, {{ current_user.name.split(' ')[0] }}! 👋</span>
+          {% endif %}
+      </div>
+
+      <div class="header-right">
+          {% if current_user.is_authenticated %}
+          <form action="{{ url_for('auth.logout') }}" method="post">
+              <button class="btn-logout">SAIR</button>
+          </form>
+          {% endif %}
+      </div>
+  </header>
+  {% endif %}
+
+  {# ------------------------------------------------------------ #}
+  {#   FLASH MESSAGES                                            #}
+  {# ------------------------------------------------------------ #}
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for cat, msg in messages %}
@@ -29,9 +42,13 @@
     {% endif %}
   {% endwith %}
 
+  {# ------------------------------------------------------------ #}
+  {#   CONTEÚDO DINÂMICO                                         #}
+  {# ------------------------------------------------------------ #}
   {% block content %}{% endblock %}
-</div>
-<script src="{{ url_for('static', filename='js/app.js') }}?v=9999"></script>
 
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

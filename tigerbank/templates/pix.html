@@ -1,76 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}⚡ PIX - Tiger Bank{% endblock %}
-
-{% block header %}
-<div class="profile-header">
-
-    <!-- Ícone -->
-    <img class="perfil-icon" src="{{ url_for('static', filename='img/tigre.png') }}" alt="Ícone do Tigre">
-
-    <!-- Título -->
-    <h1>PIX</h1>
-
-    <!-- Botão voltar no canto direito -->
-    <nav>
-        <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
-    </nav>
-
-</div>
-{% endblock %}
-
-
 {% block content %}
+<div class="card">
+  <h2>⚡ PIX</h2>
+  <form method="post">
 
-<!-- CARD PREMIUM -->
-<div class="premium-transfer">
+<div class="form-group"><label>Chave PIX (e-mail)</label><input type="email" name="chave" required></div>
+<div class="form-group"><label>Valor</label><input type="number" step="0.01" min="0.01" name="valor" required></div>
 
-    <div class="transfer-header">
-        <h2>⚡ PIX</h2>
-    </div>
-
-    <form method="post">
-
-        <!-- Tipo de chave PIX -->
-        <div class="form-group enhanced-input">
-            <label>Tipo de Chave PIX</label>
-            <div class="select-wrapper">
-            <select name="tipo_pix" id="tipo-pix" class="doc-select">
-                <option value="email">E-mail</option>
-                <option value="cpf">CPF</option>
-                <option value="cnpj">CNPJ</option>
-                <option value="celular">Celular</option>
-                <option value="aleatoria">Chave Aleatória</option>
-            </select>
-            </div>
-        </div>
-
-        <!-- Chave PIX -->
-        <div class="form-group enhanced-input">
-    <label id="pix-label">Chave PIX (e-mail)</label>
-    <div class="input-wrapper">
-        <span class="input-icon">🔑</span>
-        <input type="text"
-            id="pix-input"
-            name="chave"
-            placeholder="email@exemplo.com"
-            required>
-    </div>
+    <button class="btn btn-success" type="submit">CONFIRMAR</button>
+    <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
+  </form>
 </div>
-
-        <!-- Valor -->
-        <div class="form-group enhanced-input">
-            <label>Valor</label>
-            <div class="input-wrapper">
-                <span class="input-icon">💸</span>
-                <input type="text" name="valor" class="money-input">
-            </div>
-        </div>
-
-        <button class="btn transfer-btn" type="submit">
-            CONFIRMAR PIX
-        </button>
-
-    </form>
-</div>
-
 {% endblock %}

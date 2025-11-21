@@ -1,21 +1,27 @@
-# TigerBank – Instalação e Execução (Iteração 2)
 
-TigerBank é um aplicativo bancário digital desenvolvido em Python/Flask como parte do projeto acadêmico da disciplina Prática Profissional em Análise e Desenvolvimento de Sistemas.
+# Tiger Bank (Flask)
 
-Este documento fornece instruções completas para que qualquer desenvolvedor consiga executar a aplicação localmente.
+Arquitetura limpa e camadas.
+Banco: SQLite por padrão (`instance/tiger_bank.db`).
 
----
-
-## 📌 Requisitos
-
-- Python 3.12+
-- Git
-- MySQL/MariaDB
-- pip
-
-Verifique:
+## Rodar
 
 ```bash
-python --version
-git --version
-mysql --version
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+export FLASK_APP=app.py  # Windows: set FLASK_APP=app.py
+flask db upgrade
+flask run
+```
+
+## Testes
+```bash
+pytest -q
+```
+
+## Notas de segurança
+- Hash de senha com bcrypt.
+- Valida CPF, e-mail, força de senha.
+- Transações atômicas no serviço com `session.begin()`.
+- Proteção CSRF via Flask-WTF.

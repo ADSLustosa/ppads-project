@@ -1,93 +1,447 @@
 {% extends 'base.html' %}
 {% block title %}📈 Investimentos - Tiger Bank{% endblock %}
 
-{% block header %}
-<div class="profile-header">
-    <img class="perfil-icon" src="{{ url_for('static', filename='img/tigre.png') }}">
-    <h1>Investimentos</h1>
-    <nav>
-        <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">VOLTAR</a>
-    </nav>
-</div>
-{% endblock %}
-
 {% block content %}
+<style>
+  .investimentos-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
 
-<!-- ========================= NOVA APLICAÇÃO ========================= -->
-<div class="card investment-form-card">
-    <h2 class="card-title"><span>📊</span> Nova Aplicação</h2>
+  .investimentos-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+    gap: 1.5rem;
+  }
 
-    <form method="post">
+  @media (max-width: 900px) {
+    .investimentos-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 
-        <!-- Produto -->
+  .card-invest {
+    background: #0c1020;
+    border-radius: 14px;
+    padding: 1.5rem;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .card-invest h2, .card-invest h3 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-invest p.subtitle {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #b5b9c9;
+    font-size: 0.9rem;
+  }
+
+  .invest-form .form-group label {
+    font-weight: 500;
+  }
+
+  .invest-form select,
+  .invest-form input {
+    width: 100%;
+  }
+
+  .simulador-box {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    background: radial-gradient(circle at top left, #1dd1a1 0, #0c1020 55%);
+    color: #fff;
+  }
+
+  .simulador-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .simulador-header span {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  .simulador-valores {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .simulador-item-label {
+    opacity: 0.85;
+  }
+
+  .simulador-item-valor {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .btn-primary-neo {
+    background: linear-gradient(135deg, #1dd1a1, #10ac84);
+    border: none;
+    color: #0c1020 !important;
+    font-weight: 600;
+    padding: 0.55rem 1.3rem;
+    border-radius: 999px;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+  }
+
+  .btn-primary-neo:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(16, 172, 132, 0.45);
+    filter: brightness(1.05);
+  }
+
+  .btn-ghost-light {
+    background: transparent;
+    border-radius: 999px;
+    border: 1px solid rgba(181, 185, 201, 0.5);
+    padding: 0.5rem 1.2rem;
+    color: #dfe4ff;
+    font-weight: 500;
+  }
+
+  .produto-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .produto-card {
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    background: linear-gradient(135deg, rgba(13, 27, 54, 0.98), rgba(12, 16, 32, 0.98));
+    border: 1px solid rgba(98, 106, 136, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .produto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .produto-nome {
+    font-weight: 600;
+    font-size: 0.98rem;
+  }
+
+  .produto-tipo {
+    font-size: 0.8rem;
+    color: #b5b9c9;
+  }
+
+  .badge-risco {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .badge-risco.baixo {
+    color: #1dd1a1;
+    border-color: rgba(29, 209, 161, 0.6);
+  }
+
+  .badge-risco.muito-baixo {
+    color: #54a0ff;
+    border-color: rgba(84, 160, 255, 0.65);
+  }
+
+  .badge-risco.medio {
+    color: #feca57;
+    border-color: rgba(254, 202, 87, 0.65);
+  }
+
+  .produto-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    font-size: 0.8rem;
+    color: #b5b9c9;
+  }
+
+  .produto-taxas {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1dd1a1;
+  }
+
+  .produto-descricao {
+    font-size: 0.8rem;
+    color: #9ca3c2;
+  }
+
+  .invest-list-card {
+    margin-top: 0.3rem;
+  }
+
+  .investment-card {
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    background: rgba(12, 16, 32, 0.95);
+    border: 1px solid rgba(98, 106, 136, 0.5);
+    margin-bottom: 0.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+  }
+
+  .investment-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .investment-desc {
+    font-weight: 500;
+  }
+
+  .investment-meta {
+    color: #b5b9c9;
+  }
+
+  .investment-actions form {
+    margin: 0;
+  }
+
+  .btn-resgatar {
+    border-radius: 999px;
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+  }
+</style>
+
+<div class="investimentos-page">
+  <h1>📈 Investimentos</h1>
+  <p class="text-muted">
+    Escolha um produto, simule o retorno e aplique seu dinheiro de forma simples e transparente.
+  </p>
+
+  <div class="investimentos-grid">
+    <!-- Coluna esquerda: Simulador + Formulário -->
+    <div class="card-invest">
+      <h2>Simulador & Aplicação</h2>
+      <p class="subtitle">
+        Ajuste o valor e o prazo para visualizar o montante estimado antes de investir.
+      </p>
+
+      <form method="post" class="invest-form">
         <div class="form-group">
-            <label>Produto</label>
-            <div class="select-wrapper">
-                <select name="produto" required>
-                    {% for key, p in produtos.items() %}
-                        {% set nome = p.name if p.name else p['name'] %}
-                        {% set taxa = p.rate if p.rate else p['rate'] %}
-                        <option value="{{ key }}">{{ nome }} ({{ (taxa * 100) | round(2) }}% / mês)</option>
-                    {% endfor %}
-                </select>
-            </div>
+          <label>Produto</label>
+          <select name="produto" id="produto-select" required>
+            {% for key, p in produtos.items() %}
+            <option
+              value="{{ key }}"
+              data-taxa="{{ p['taxa_mensal'] }}"
+            >
+              {{ p['nome'] }} — {{ (p['taxa_mensal'] * 100) | round(2) }}% a.m.
+            </option>
+            {% endfor %}
+          </select>
         </div>
 
-        <!-- Valor -->
         <div class="form-group">
-            <label>Valor</label>
-            <div class="input-wrapper"><span class="input-icon">💵</span><input type="text" name="valor" class="money-input"></div>
+          <label>Valor a investir (R$)</label>
+          <input
+            type="number"
+            step="0.01"
+            min="100"
+            name="valor"
+            id="valor-input"
+            placeholder="Ex: 1000.00"
+            required
+          >
         </div>
 
-        <!-- Período -->
         <div class="form-group">
-            <label>Período (meses)</label>
-            <div class="select-wrapper">
-                <select name="meses" required>
-                    <option value="3">3 meses</option>
-                    <option value="6">6 meses</option>
-                    <option value="12">12 meses</option>
-                    <option value="24">24 meses</option>
-                </select>
-            </div>
+          <label>Período (meses)</label>
+          <select name="meses" id="meses-select" required>
+            <option value="3">3 meses</option>
+            <option value="6">6 meses</option>
+            <option value="12">12 meses</option>
+            <option value="24">24 meses</option>
+          </select>
         </div>
 
-        <button class="btn btn-success" type="submit">INVESTIR</button>
-    </form>
-</div>
-
-
-<!-- ========================= SEUS INVESTIMENTOS ========================= -->
-{% if investimentos %}
-<div class="card investment-list-card">
-    <h2 class="card-title"><span>💼</span> Seus Investimentos</h2>
-
-    {% set ativos = investimentos | selectattr('active') | list %}
-    
-    {% if ativos %}
-        {% for inv in ativos %}
-            <div class="investment-item">
-
-                <div class="investment-info">
-                    <h3 class="inv-title">{{ inv.product }}</h3>
-                    <p class="inv-details">
-                        Principal:
-                        <strong>R$ {{ '%.2f' | format(inv.principal | float) }}</strong>
-                        &nbsp;•&nbsp;
-                        Prazo: <strong>{{ inv.months }} meses </strong>
-                    </p>
-                </div>
-
-                <form method="post" action="{{ url_for('tx.resgatar', inv_id=inv.id) }}">
-                    <button class="resgatar-btn" type="submit">RESGATAR</button>
-                </form>
-
+        <div class="simulador-box">
+          <div class="simulador-header">
+            <strong>Simulação em tempo real</strong>
+            <span id="simulador-produto-label">Selecione um produto e um valor</span>
+          </div>
+          <div class="simulador-valores">
+            <div>
+              <div class="simulador-item-label">Valor investido</div>
+              <div class="simulador-item-valor" id="sim-valor">R$ 0,00</div>
             </div>
+            <div>
+              <div class="simulador-item-label">Montante estimado</div>
+              <div class="simulador-item-valor" id="sim-montante">R$ 0,00</div>
+            </div>
+            <div>
+              <div class="simulador-item-label">Rendimento estimado</div>
+              <div class="simulador-item-valor" id="sim-rendimento">R$ 0,00</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.2rem; display: flex; gap: 0.6rem; flex-wrap: wrap;">
+          <button class="btn btn-primary-neo" type="submit">INVESTIR AGORA</button>
+          <a class="btn btn-ghost-light" href="{{ url_for('dashboard.index') }}">VOLTAR PARA O MENU INICIAL</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Coluna direita: Cards dos produtos -->
+    <div class="card-invest">
+      <h2>Produtos disponíveis</h2>
+      <p class="subtitle">
+        Compare risco, liquidez e taxa mensal antes de decidir onde investir.
+      </p>
+
+      <div class="produto-cards">
+        {% for key, p in produtos.items() %}
+        {% set taxa = (p['taxa_mensal'] * 100) | round(2) %}
+        {% set risco = (p['risco'] or '') | lower %}
+        <div class="produto-card">
+          <div class="produto-header">
+            <div>
+              <div class="produto-nome">{{ p['nome'] }}</div>
+              <div class="produto-tipo">{{ p['tipo'] }}</div>
+            </div>
+            <div>
+              <span class="badge-risco
+                {% if 'muito baixo' in risco %}muito-baixo
+                {% elif 'baixo' in risco %}baixo
+                {% elif 'médio' in risco or 'medio' in risco %}medio
+                {% endif %}
+              ">
+                {{ p['risco'] }}
+              </span>
+            </div>
+          </div>
+
+          <div class="produto-meta">
+            <span>Liquidez: <strong>{{ p['liquidez'] }}</strong></span>
+            <span class="produto-taxas">Taxa: {{ taxa }}% a.m.</span>
+          </div>
+
+          <div class="produto-descricao">
+            {{ p['descricao'] }}
+          </div>
+        </div>
         {% endfor %}
-    {% else %}
-        <p class="empty-state">Você ainda não possui investimentos ativos.</p>
-    {% endif %}
-</div>
-{% endif %}
+      </div>
+    </div>
+  </div>
 
+  {% if investimentos %}
+  <div class="card-invest invest-list-card">
+    <h2>💼 Seus Investimentos</h2>
+    <p class="subtitle">
+      Histórico de aplicações registradas na sua conta. Você pode efetuar o resgate quando desejar.
+    </p>
+
+    {% for inv in investimentos %}
+      <div class="investment-card">
+        <div class="investment-main">
+          <div class="investment-desc">{{ inv.description }}</div>
+          <div class="investment-meta">
+            Aplicado: R$ {{ '%.2f'|format((-inv.amount)|float) }}
+            · Em {{ inv.created_at.strftime('%d/%m/%Y %H:%M') if inv.created_at }}
+          </div>
+        </div>
+        <div class="investment-actions">
+          <form method="post" action="{{ url_for('tx.resgatar', inv_id=inv.id) }}">
+            <button class="btn btn-warning btn-resgatar" type="submit">RESGATAR</button>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  (function() {
+    function formatBRL(valor) {
+      if (isNaN(valor)) {
+        return "R$ 0,00";
+      }
+      return valor.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+    }
+
+    function atualizarSimulador() {
+      var select = document.getElementById('produto-select');
+      var valorInput = document.getElementById('valor-input');
+      var mesesSelect = document.getElementById('meses-select');
+
+      if (!select || !valorInput || !mesesSelect) return;
+
+      var opt = select.options[select.selectedIndex];
+      var taxaStr = opt ? (opt.getAttribute('data-taxa') || '0') : '0';
+      taxaStr = taxaStr.replace(',', '.');
+
+      var taxa = parseFloat(taxaStr);
+      var valor = parseFloat(valorInput.value.replace(',', '.')) || 0;
+      var meses = parseInt(mesesSelect.value, 10) || 0;
+
+      var labelProduto = document.getElementById('simulador-produto-label');
+      if (opt && labelProduto) {
+        labelProduto.textContent = opt.textContent.trim();
+      }
+
+      var elValor = document.getElementById('sim-valor');
+      var elMontante = document.getElementById('sim-montante');
+      var elRendimento = document.getElementById('sim-rendimento');
+
+      elValor.textContent = formatBRL(valor);
+
+      if (valor > 0 && taxa > 0 && meses > 0) {
+        var fator = Math.pow(1 + taxa, meses);
+        var montante = valor * fator;
+        var rendimento = montante - valor;
+
+        elMontante.textContent = formatBRL(montante);
+        elRendimento.textContent = formatBRL(rendimento);
+      } else {
+        elMontante.textContent = "R$ 0,00";
+        elRendimento.textContent = "R$ 0,00";
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var select = document.getElementById('produto-select');
+      var valorInput = document.getElementById('valor-input');
+      var mesesSelect = document.getElementById('meses-select');
+
+      if (select) select.addEventListener('change', atualizarSimulador);
+      if (valorInput) valorInput.addEventListener('input', atualizarSimulador);
+      if (mesesSelect) mesesSelect.addEventListener('change', atualizarSimulador);
+
+      atualizarSimulador();
+    });
+  })();
+</script>
 {% endblock %}

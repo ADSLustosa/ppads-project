@@ -2,19 +2,28 @@
 from __future__ import annotations
 import os
 from flask import Flask, Response, render_template
-from .extensions import db, migrate, login_manager
-from .models import User
-from tigerbank.config import Config
+from tigerbank.extensions import db, login_manager
+from tigerbank.models import User
 
 def create_app() -> Flask:
     app = Flask(__name__, template_folder="templates", static_folder="static")
 
-    # 1️⃣ Primeiro carrega TUDO da config
-    app.config.from_object(Config)
+    # -----------------------------------------------------
+    # CONFIGURAÇÕES DE DEBUG E ATUALIZAÇÃO AUTOMÁTICA
+    # -----------------------------------------------------
+    app.config["DEBUG"] = True
+    app.config["TEMPLATES_AUTO_RELOAD"] = True
+    app.jinja_env.auto_reload = True
+    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0   # impede cache de CSS/JS
+    # -----------------------------------------------------
 
-    # 2️⃣ Só depois inicializa extensões
+    # Config base
+    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "change-this-in-dev")
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///tigerbank.db")
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+    # Extensões
     db.init_app(app)
-    migrate.init_app(app, db)
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
     login_manager.login_message_category = "info"
@@ -26,7 +35,7 @@ def create_app() -> Flask:
         except Exception:
             return None
 
-    # 3️⃣ Blueprints
+    # Blueprints
     from tigerbank.blueprints import auth, dashboard, transactions, profile
     app.register_blueprint(auth.bp)
     app.register_blueprint(dashboard.bp)
@@ -58,12 +67,5 @@ def create_app() -> Flask:
             return app.send_static_file("favicon.ico")
         except Exception:
             return Response(status=204)
-
-    @app.template_filter("cpf")
-    def format_cpf(value: str):
-        digits = ''.join(filter(str.isdigit, value or ""))
-        if len(digits) != 11:
-            return value
-        return f"{digits[0:3]}.{digits[3:6]}.{digits[6:9]}-{digits[9:11]}"
 
     return app

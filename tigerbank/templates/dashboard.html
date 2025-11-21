@@ -1,34 +1,33 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard - Tiger Bank{% endblock %}
-{% block header %}
-<div class="profile-header">
 
-    <!-- Ícone -->
-    <img class="perfil-icon" src="{{ url_for('static', filename='img/tigre.png') }}" alt="Ícone do Tigre">
-
-    <!-- Título -->
-    <h1>Olá, {{ current_user.name.split(' ')[0] }}</h1>
-
-    <!-- Botão voltar no canto direito -->
-    <nav>
-        <button class="btn btn-warning" style="width:auto;padding:10px 20px">SAIR</button>
-    </nav>
-
-</div>
-{% endblock %}
 {% block content %}
 <div class="dashboard">
 
+  {# A saudação foi removida aqui porque agora está no HEADER #}
+
   <div class="carousel-container">
     <div class="carousel-slide slide1 active">
-      <div><h3>🎉 Cashback de 5%</h3><p>Ganhe 5% de volta nas compras</p></div>
+      <div>
+        <h3>🎉 Cashback de 5%</h3>
+        <p>Ganhe 5% de volta nas compras</p>
+      </div>
     </div>
+
     <div class="carousel-slide slide2">
-      <div><h3>📈 Investimentos</h3><p>A partir de R$ 100</p></div>
+      <div>
+        <h3>📈 Investimentos</h3>
+        <p>A partir de R$ 100</p>
+      </div>
     </div>
+
     <div class="carousel-slide slide3">
-      <div><h3>⚡ PIX</h3><p>24/7 instantâneo</p></div>
+      <div>
+        <h3>⚡ PIX</h3>
+        <p>24/7 instantâneo</p>
+      </div>
     </div>
+
     <div class="carousel-dots">
       <div class="carousel-dot active"></div>
       <div class="carousel-dot"></div>
@@ -43,33 +42,42 @@
   </div>
 
   <div class="action-buttons">
+
     <a class="action-btn" href="{{ url_for('tx.deposito') }}">
-      <div class="action-btn-icon">💵</div><div class="action-btn-text">Depositar</div>
+      <div class="action-btn-icon">💵</div>
+      <div class="action-btn-text">Depositar</div>
     </a>
 
     <a class="action-btn green" href="{{ url_for('tx.saque') }}">
-      <div class="action-btn-icon">💸</div><div class="action-btn-text">Sacar</div>
+      <div class="action-btn-icon">💸</div>
+      <div class="action-btn-text">Sacar</div>
     </a>
 
     <a class="action-btn" href="{{ url_for('tx.transferencia') }}">
-      <div class="action-btn-icon">🔄</div><div class="action-btn-text">Transferir</div>
+      <div class="action-btn-icon">🔄</div>
+      <div class="action-btn-text">Transferir</div>
     </a>
 
     <a class="action-btn green" href="{{ url_for('tx.pix') }}">
-      <div class="action-btn-icon">⚡</div><div class="action-btn-text">PIX</div>
+      <div class="action-btn-icon">⚡</div>
+      <div class="action-btn-text">PIX</div>
     </a>
 
     <a class="action-btn purple" href="{{ url_for('tx.emprestimo') }}">
-      <div class="action-btn-icon">💰</div><div class="action-btn-text">Empréstimo</div>
+      <div class="action-btn-icon">💰</div>
+      <div class="action-btn-text">Empréstimo</div>
     </a>
 
     <a class="action-btn purple" href="{{ url_for('tx.investimentos') }}">
-      <div class="action-btn-icon">📈</div><div class="action-btn-text">Investir</div>
+      <div class="action-btn-icon">📈</div>
+      <div class="action-btn-text">Investir</div>
     </a>
 
     <a class="action-btn green" href="{{ url_for('tx.extrato') }}">
-      <div class="action-btn-icon">📋</div><div class="action-btn-text">Extrato</div>
+      <div class="action-btn-icon">📋</div>
+      <div class="action-btn-text">Extrato</div>
     </a>
+
     <a class="action-btn" href="{{ url_for('profile.view') }}">
       <div class="action-btn-icon">👤</div>
       <div class="action-btn-text">Perfil</div>
