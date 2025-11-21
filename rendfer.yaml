@@ -1,10 +1,13 @@
 services:
   - type: web
     name: tigerbank
-    env: docker
+    env: python
     region: oregon
     plan: free
     autoDeploy: true
+
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn wsgi:app"
 
     envVars:
       - key: FLASK_ENV
