@@ -6,8 +6,13 @@ services:
     plan: free
     autoDeploy: true
 
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn wsgi:app"
+
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+
+    startCommand: gunicorn wsgi:app --workers=2 --threads=2 --timeout=120
+
 
     envVars:
       - key: FLASK_ENV
@@ -18,3 +23,13 @@ services:
 
       - key: DATABASE_URL
         sync: false
+
+
+      - key: SQLALCHEMY_DATABASE_URI
+        fromDatabase:
+          name: postgres
+          property: connectionString
+
+
+    databases:
+      - name: postgres
