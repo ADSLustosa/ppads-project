@@ -5,24 +5,29 @@ from flask import Flask, Response, render_template
 from tigerbank.extensions import db, login_manager
 from tigerbank.models import User
 
+
 def create_app() -> Flask:
     app = Flask(__name__, template_folder="templates", static_folder="static")
 
-    # -----------------------------------------------------
-    # CONFIGURAÇÕES DE DEBUG E ATUALIZAÇÃO AUTOMÁTICA
-    # -----------------------------------------------------
-    app.config["DEBUG"] = True
-    app.config["TEMPLATES_AUTO_RELOAD"] = True
-    app.jinja_env.auto_reload = True
-    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0   # impede cache de CSS/JS
-    # -----------------------------------------------------
+    is_dev = os.environ.get("FLASK_ENV") == "development"
 
-    # Config base
+    app.config["TEMPLATES_AUTO_RELOAD"] = is_dev
+    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0 if is_dev else None
+    if is_dev:
+        app.jinja_env.auto_reload = True
+
+
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "change-this-in-dev")
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///tigerbank.db")
+
+    db_url = os.environ.get("DATABASE_URL", "sqlite:///tigerbank.db")
+
+    if db_url.startswith("postgres://"):
+        db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    # Extensões
+
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
@@ -35,16 +40,24 @@ def create_app() -> Flask:
         except Exception:
             return None
 
-    # Blueprints
     from tigerbank.blueprints import auth, dashboard, transactions, profile
     app.register_blueprint(auth.bp)
     app.register_blueprint(dashboard.bp)
     app.register_blueprint(transactions.bp)
     app.register_blueprint(profile.bp)
 
+
     @app.route("/")
     def index():
         return render_template("home.html")
+
+    @app.route("/favicon.ico")
+    def favicon():
+        try:
+            return app.send_static_file("favicon.ico")
+        except Exception:
+            return Response(status=204)
+
 
     @app.before_request
     def _rollback_defensivo():
@@ -60,12 +73,5 @@ def create_app() -> Flask:
                 db.session.rollback()
         finally:
             db.session.remove()
-
-    @app.route("/favicon.ico")
-    def favicon():
-        try:
-            return app.send_static_file("favicon.ico")
-        except Exception:
-            return Response(status=204)
 
     return app
