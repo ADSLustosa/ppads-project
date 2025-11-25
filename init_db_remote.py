@@ -1,28 +1,31 @@
+import os
 from tigerbank import create_app
 from tigerbank.extensions import db
 from tigerbank.models import User
-from tigerbank.security import hash_password
 
+# 1. Usa o DATABASE_URL do Render já configurado no .env
 app = create_app()
 
 with app.app_context():
-    print("Criando tabelas no PostgreSQL remoto...")
+    print("Criando tabelas no banco remoto...")
     db.create_all()
-    print("Tabelas criadas!")
 
+    # 2. Cria o usuário de teste
     email = "teste@tigerbank.com"
     senha = "Testando1@"
 
-    user = User.query.filter_by(email=email).first()
-
-    if user:
-        print("Usuário já existe:", user.email)
-    else:
-        novo = User(
+    existing = User.query.filter_by(email=email).first()
+    if not existing:
+        user = User(
             name="Usuário Teste",
             email=email,
-            password_hash=hash_password(senha)
+            cpf="00000000000"
         )
-        db.session.add(novo)
+        user.set_password(senha)
+        db.session.add(user)
         db.session.commit()
-        print("Usuário criado:", novo.email)
+        print("Usuário criado com sucesso!")
+    else:
+        print("Usuário já existe. Nenhuma alteração feita.")
+
+    print("Banco remoto inicializado com sucesso!")
