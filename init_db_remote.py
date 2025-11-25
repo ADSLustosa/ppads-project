@@ -6,22 +6,23 @@ from tigerbank.security import hash_password
 app = create_app()
 
 with app.app_context():
-    print("Criando tabelas no banco remoto...")
+    print("Criando tabelas no PostgreSQL remoto...")
     db.create_all()
-    print("Tabelas criadas com sucesso!")
+    print("Tabelas criadas!")
 
     email = "teste@tigerbank.com"
     senha = "Testando1@"
 
-    existente = User.query.filter_by(email=email).first()
-    if existente:
-        print("Usuário já existe:", existente.email)
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        print("Usuário já existe:", user.email)
     else:
         novo = User(
             name="Usuário Teste",
             email=email,
-            password_hash=hash_password(senha),
+            password_hash=hash_password(senha)
         )
         db.session.add(novo)
         db.session.commit()
-        print("Usuário criado com sucesso no banco remoto:", novo.email)
+        print("Usuário criado:", novo.email)
