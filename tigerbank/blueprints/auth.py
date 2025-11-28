@@ -6,30 +6,40 @@ from tigerbank.models import User, Account
 from tigerbank.security import hash_password, verify_password
 from tigerbank.validators import strong_password, normalize_digits
 
-bp = Blueprint("auth", __name__, template_folder="../templates")
+# NOME CORRETO DO BLUEPRINT → auth_bp
+auth_bp = Blueprint(
+    "auth",
+    __name__,
+    url_prefix="",                 # mantém rotas na raiz
+    template_folder="../templates"
+)
 
-@bp.get("/")
+@auth_bp.get("/")
 def home():
     if current_user.is_authenticated:
         return redirect(url_for("dashboard.index"))
     return render_template("home.html")
 
-@bp.route("/login", methods=["GET", "POST"])
+
+@auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
+
         user = User.query.filter_by(email=email).first()
 
-        # verificação compatível com hashes werkzeug ou bcrypt
+        # verificação segura
         if user and verify_password(password, user.password_hash):
             login_user(user)
             return redirect(url_for("dashboard.index"))
 
         flash("E-mail ou senha incorretos.", "error")
+
     return render_template("login.html")
 
-@bp.route("/register", methods=["GET", "POST"])
+
+@auth_bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         cpf_raw = request.form.get("cpf", "")
@@ -54,7 +64,7 @@ def register():
                 password_hash=hash_password(password)
             )
             db.session.add(user)
-            db.session.flush()  # Gera ID para vincular conta
+            db.session.flush()  # Gera ID do usuário
 
             acc = Account(
                 user_id=user.id,
@@ -69,16 +79,18 @@ def register():
 
     return render_template("register.html")
 
-@bp.route("/esqueci-minha-senha", methods=["GET", "POST"], endpoint="esqueci_senha")
+
+@auth_bp.route("/esqueci-minha-senha", methods=["GET", "POST"], endpoint="esqueci_senha")
 def esqueci_senha():
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
-        # Sem envio real de e-mail; apenas feedback
         flash("Se o e-mail existir, enviaremos instruções de redefinição.", "success")
         return redirect(url_for("auth.login"))
+
     return render_template("esqueci_senha.html")
 
-@bp.post("/logout")
+
+@auth_bp.post("/logout")
 def logout():
     logout_user()
     return redirect(url_for("auth.home"))

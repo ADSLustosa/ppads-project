@@ -11,10 +11,15 @@ from tigerbank.extensions import db
 from tigerbank.models import User, Account, Transaction
 from tigerbank.security import hash_password
 
-bp = Blueprint("tx", __name__, url_prefix="/tx")
+# === CORREÇÃO CRUCIAL AQUI ===
+tx_bp = Blueprint(
+    "tx",
+    __name__,
+    url_prefix="/tx",
+    template_folder="../templates"
+)
 
 # ---------- catálogo de produtos de investimento ----------
-# Taxas fictícias mensais, apenas para simulação.
 INV_PRODUTOS: dict[str, dict] = {
     "cdb_100_cdi": {
         "codigo": "cdb_100_cdi",
@@ -23,7 +28,7 @@ INV_PRODUTOS: dict[str, dict] = {
         "tipo": "Renda Fixa",
         "risco": "Baixo",
         "liquidez": "D+30",
-        "taxa_mensal": Decimal("0.011"),  # 1,1% a.m. (exemplo)
+        "taxa_mensal": Decimal("0.011"),
     },
     "tesouro_selic": {
         "codigo": "tesouro_selic",
@@ -32,7 +37,7 @@ INV_PRODUTOS: dict[str, dict] = {
         "tipo": "Renda Fixa",
         "risco": "Muito Baixo",
         "liquidez": "D+1",
-        "taxa_mensal": Decimal("0.009"),  # 0,9% a.m. (exemplo)
+        "taxa_mensal": Decimal("0.009"),
     },
     "fii_mxrf11": {
         "codigo": "fii_mxrf11",
@@ -41,15 +46,13 @@ INV_PRODUTOS: dict[str, dict] = {
         "tipo": "Fundos Imobiliários",
         "risco": "Médio",
         "liquidez": "D+2",
-        "taxa_mensal": Decimal("0.012"),  # 1,2% a.m. yield (exemplo)
+        "taxa_mensal": Decimal("0.012"),
     },
 }
 
-
-# ---------- utils financeiros ----------
+# ---------- Utils financeiros ----------
 def _q(v) -> Decimal:
     return Decimal(str(v)).quantize(Decimal("0.01"))
-
 
 def _to_float(s: str) -> float:
     s = (s or "0").replace("R$", "").replace(" ", "").replace(".", "").replace(",", ".")
@@ -58,13 +61,11 @@ def _to_float(s: str) -> float:
     except Exception:
         return 0.0
 
-
 def _rollback():
     try:
         db.session.rollback()
     except Exception:
         pass
-
 
 def _ensure_account() -> Account:
     if getattr(current_user, "is_authenticated", False) and getattr(current_user, "account", None):
@@ -81,8 +82,7 @@ def _ensure_account() -> Account:
         db.session.flush()
         db.session.add(Account(user_id=u.id, type="Corrente", balance=_q(0)))
         db.session.commit()
-    return u.account  # type: ignore[attr-defined]
-
+    return u.account
 
 def _ensure_recipient(orig: Account) -> Account:
     other = Account.query.filter(Account.id != orig.id).first()
@@ -101,7 +101,6 @@ def _ensure_recipient(orig: Account) -> Account:
     db.session.commit()
     return acc
 
-
 def _post_tx(acc_id: int, kind: str, amount: Decimal, desc: str, new_balance: Decimal):
     db.session.add(
         Transaction(
@@ -113,11 +112,7 @@ def _post_tx(acc_id: int, kind: str, amount: Decimal, desc: str, new_balance: De
         )
     )
 
-
 def _simular_montante(valor: Decimal, taxa_mensal: Decimal, meses: int) -> tuple[Decimal, Decimal]:
-    """
-    Retorna (montante, rendimento) para um investimento com juros compostos.
-    """
     if meses <= 0 or taxa_mensal <= 0:
         return valor, _q(0)
     fator = (Decimal("1.0") + taxa_mensal) ** meses
@@ -125,11 +120,7 @@ def _simular_montante(valor: Decimal, taxa_mensal: Decimal, meses: int) -> tuple
     rendimento = _q(montante - valor)
     return montante, rendimento
 
-
 def _parse_meses_descricao(desc: str) -> int:
-    """
-    Extrai o número de meses de descrições no formato 'Produto (12m)'.
-    """
     m = re.search(r"\((\d+)\s*m\)", desc)
     if not m:
         return 0
@@ -138,10 +129,8 @@ def _parse_meses_descricao(desc: str) -> int:
     except ValueError:
         return 0
 
-
 # --------------------------- ROTAS ---------------------------
-
-@bp.route("/deposito", methods=["GET", "POST"])
+@tx_bp.route("/deposito", methods=["GET", "POST"])
 def deposito():
     if request.method == "POST":
         valor = _q(_to_float(request.form.get("valor", "0")))
@@ -155,8 +144,7 @@ def deposito():
         return redirect(url_for("dashboard.index"))
     return render_template("deposito.html")
 
-
-@bp.route("/saque", methods=["GET", "POST"])
+@tx_bp.route("/saque", methods=["GET", "POST"])
 def saque():
     if request.method == "POST":
         valor = _q(_to_float(request.form.get("valor", "0")))
@@ -170,47 +158,31 @@ def saque():
         return redirect(url_for("dashboard.index"))
     return render_template("saque.html")
 
-
-@bp.route("/transferencia", methods=["GET", "POST"])
+@tx_bp.route("/transferencia", methods=["GET", "POST"])
 def transferencia():
     if request.method == "POST":
         origem = _ensure_account()
         valor = _q(_to_float(request.form.get("valor", "0")))
-        # Ignora CPF informado. Garante destinatário válido.
         dest = _ensure_recipient(origem)
         _rollback()
-        origem.balance = _q(origem.balance) - valor
-        dest.balance = _q(dest.balance) + valor
-        _post_tx(
-            origem.id,
-            "Transferência Enviada",
-            -valor,
-            "Transferência livre (teste)",
-            origem.balance,
-        )
-        _post_tx(
-            dest.id,
-            "Transferência Recebida",
-            valor,
-            "Transferência livre (teste)",
-            dest.balance,
-        )
+        origem.balance -= valor
+        dest.balance += valor
+        _post_tx(origem.id, "Transferência Enviada", -valor, "Transferência livre (teste)", origem.balance)
+        _post_tx(dest.id, "Transferência Recebida", valor, "Transferência livre (teste)", dest.balance)
         db.session.commit()
         flash("Transferência concluída.", "success")
         return redirect(url_for("dashboard.index"))
     return render_template("transferencia.html")
 
-
-@bp.route("/pix", methods=["GET", "POST"])
+@tx_bp.route("/pix", methods=["GET", "POST"])
 def pix():
     if request.method == "POST":
         origem = _ensure_account()
         valor = _q(_to_float(request.form.get("valor", "0")))
-        # Ignora chave PIX. Garante destinatário válido.
         dest = _ensure_recipient(origem)
         _rollback()
-        origem.balance = _q(origem.balance) - valor
-        dest.balance = _q(dest.balance) + valor
+        origem.balance -= valor
+        dest.balance += valor
         _post_tx(origem.id, "PIX Enviado", -valor, "PIX livre (teste)", origem.balance)
         _post_tx(dest.id, "PIX Recebido", valor, "PIX livre (teste)", dest.balance)
         db.session.commit()
@@ -218,8 +190,7 @@ def pix():
         return redirect(url_for("dashboard.index"))
     return render_template("pix.html")
 
-
-@bp.get("/extrato")
+@tx_bp.get("/extrato")
 def extrato():
     acc = _ensure_account()
     txs = (
@@ -230,17 +201,14 @@ def extrato():
     )
     return render_template("extrato.html", txs=txs)
 
-
-@bp.route("/investimentos", methods=["GET", "POST"])
+@tx_bp.route("/investimentos", methods=["GET", "POST"])
 def investimentos():
     acc = _ensure_account()
-
-    # Catálogo de produtos enviado ao template
     produtos = INV_PRODUTOS
 
     if request.method == "POST":
         valor = _q(_to_float(request.form.get("valor", "0")))
-        produto_codigo = request.form.get("produto", "cdb_100_cdi")
+        produto_codigo = request.form.get("produto", "")
         meses_str = request.form.get("meses", "0")
 
         try:
@@ -250,37 +218,27 @@ def investimentos():
 
         produto = INV_PRODUTOS.get(produto_codigo)
         if not produto:
-            flash("Produto de investimento inválido.", "danger")
+            flash("Produto inválido.", "danger")
             return redirect(url_for("tx.investimentos"))
 
-        taxa_mensal = produto["taxa_mensal"]
-        montante, rendimento = _simular_montante(valor, taxa_mensal, meses)
+        montante, rendimento = _simular_montante(valor, produto["taxa_mensal"], meses)
 
         _rollback()
 
-        # débito na conta (aplicação)
-        acc.balance = _q(acc.balance) - valor
+        acc.balance -= valor
 
         desc = (
             f"{produto['nome']} ({meses}m) | "
             f"Aplicação: R$ {valor:.2f} | "
-            f"Rentabilidade esperada: R$ {rendimento:.2f} | "
-            f"Montante estimado: R$ {montante:.2f}"
+            f"Rendimento esperado: R$ {rendimento:.2f} | "
+            f"Montante: R$ {montante:.2f}"
         )
 
-        _post_tx(
-            acc.id,
-            "Investimento",
-            -valor,
-            desc,
-            acc.balance,
-        )
-
+        _post_tx(acc.id, "Investimento", -valor, desc, acc.balance)
         db.session.commit()
-        flash("Investimento realizado com sucesso.", "success")
+        flash("Investimento realizado!", "success")
         return redirect(url_for("tx.investimentos"))
 
-    # Lista de investimentos já realizados (transactions do tipo "Investimento")
     investimentos = (
         Transaction.query.filter_by(account_id=acc.id, kind="Investimento")
         .order_by(Transaction.created_at.desc())
@@ -293,72 +251,52 @@ def investimentos():
         investimentos=investimentos,
     )
 
-
-@bp.post("/investimentos/<int:inv_id>/resgatar")
+@tx_bp.post("/investimentos/<int:inv_id>/resgatar")
 def resgatar(inv_id: int):
     acc = _ensure_account()
     _rollback()
 
-    # Localiza o investimento original
     inv = Transaction.query.filter_by(
-        id=inv_id,
-        account_id=acc.id,
-        kind="Investimento",
+        id=inv_id, account_id=acc.id, kind="Investimento"
     ).first()
 
     if not inv:
         flash("Investimento não encontrado.", "danger")
         return redirect(url_for("tx.investimentos"))
 
-    valor_aplicado = _q(-inv.amount)  # amount é negativo para investimento
+    valor_aplicado = _q(-inv.amount)
     meses = _parse_meses_descricao(inv.description)
 
-    # Tenta identificar o produto pelo nome no início da descrição
     produto_nome = inv.description.split("(")[0].strip()
-    produto = None
-    for p in INV_PRODUTOS.values():
-        if p["nome"] == produto_nome:
-            produto = p
-            break
+    produto = next((p for p in INV_PRODUTOS.values() if p["nome"] == produto_nome), None)
 
     if not produto:
-        # se não conseguir identificar, resgata apenas o principal
         montante = valor_aplicado
         rendimento = _q(0)
     else:
-        taxa_mensal = produto["taxa_mensal"]
-        montante, rendimento = _simular_montante(valor_aplicado, taxa_mensal, meses)
+        montante, rendimento = _simular_montante(valor_aplicado, produto["taxa_mensal"], meses)
 
-    # crédito na conta
-    acc.balance = _q(acc.balance) + montante
+    acc.balance += montante
 
     desc_resgate = (
-        f"Resgate de investimento #{inv.id} - {produto_nome} "
+        f"Resgate do investimento {inv.id} - {produto_nome} "
         f"({meses}m) | Principal: R$ {valor_aplicado:.2f} | "
         f"Rendimento: R$ {rendimento:.2f}"
     )
 
-    _post_tx(
-        acc.id,
-        "Resgate",
-        montante,
-        desc_resgate,
-        acc.balance,
-    )
-
+    _post_tx(acc.id, "Resgate", montante, desc_resgate, acc.balance)
     db.session.commit()
     flash("Resgate efetuado com sucesso.", "success")
     return redirect(url_for("tx.investimentos"))
 
-
-@bp.route("/emprestimo", methods=["GET", "POST"])
+@tx_bp.route("/emprestimo", methods=["GET", "POST"])
 def emprestimo():
     if request.method == "POST":
         valor = _q(_to_float(request.form.get("valor", "0")))
         parcelas = request.form.get("meses", "0")
         acc = _ensure_account()
         _rollback()
-        acc.balance = _q(acc.balance) + valor
+        acc.balance += valor
         _post_tx(
             acc.id,
             "Empréstimo",
