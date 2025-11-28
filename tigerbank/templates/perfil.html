@@ -49,6 +49,7 @@
 <!-- Formulário de atualização -->
 <h3 style="margin: 30px 0 20px 0; text-align:center;">✏️ Editar Informações</h3>
 <form method="post" action="{{ url_for('profile.update') }}" class="card">
+  {{ csrf_token() }}
   <div class="form-group">
     <label>Nome</label>
     <input name="name" value="{{ current_user.name }}" required>
@@ -67,6 +68,7 @@
 <!-- Formulário de troca de senha -->
 <h3 style="margin: 30px 0 20px 0; text-align:center;">🔒 Alterar Senha</h3>
 <form method="post" action="{{ url_for('profile.change_password') }}" class="card">
+  {{ csrf_token() }}
   <div class="form-group">
     <label>Senha atual</label>
     <input type="password" name="atual" required>

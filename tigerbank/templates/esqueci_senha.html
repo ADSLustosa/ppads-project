@@ -4,6 +4,7 @@
 <div class="card" style="max-width:420px;margin:0 auto;">
     <h2>🔑 Redefinir senha</h2>
     <form method="post">
+        {{ csrf_token() }}
         <div class="form-group">
         <label>E-mail cadastrado</label>
         <input type="email" name="email" required>

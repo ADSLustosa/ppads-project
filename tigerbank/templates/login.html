@@ -10,6 +10,7 @@
 <div class="card login-card">
   <h2 class="login-title">🔐 Login</h2>
   <form method="post" class="login-form">
+    {{ csrf_token() }}
     <div class="form-group">
       <label>E-mail</label>
       <input type="email" name="email" required placeholder="seu@email.com">

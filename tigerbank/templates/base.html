@@ -24,6 +24,7 @@
       <div class="header-right">
           {% if current_user.is_authenticated %}
           <form action="{{ url_for('auth.logout') }}" method="post">
+              {{ csrf_token() }}
               <button class="btn-logout">SAIR</button>
           </form>
           {% endif %}
